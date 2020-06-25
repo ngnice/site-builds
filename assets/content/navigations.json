@@ -1,0 +1,78 @@
+{
+  "zh-cn": [
+    {
+      "id": "guide",
+      "path": "docs",
+      "title": "文档",
+      "subtitle": "",
+      "items": [
+        {
+          "id": "intro",
+          "path": "intro",
+          "title": "介绍",
+          "subtitle": "",
+          "items": [
+            {
+              "id": "intro",
+              "path": "intro",
+              "title": "认识 Angular",
+              "subtitle": "",
+              "contentPath": "/docs/guide/intro/intro.html"
+            },
+            {
+              "id": "resources",
+              "path": "resources",
+              "title": "资源推荐",
+              "subtitle": "",
+              "contentPath": "/docs/guide/intro/resources.html"
+            }
+          ]
+        },
+        {
+          "id": "component",
+          "path": "component",
+          "title": "组件库开发",
+          "subtitle": "",
+          "items": [
+            {
+              "id": "initialization",
+              "path": "initialization",
+              "title": "初始化环境",
+              "subtitle": "",
+              "contentPath": "/docs/guide/component/initialization.html"
+            },
+            {
+              "id": "cdk",
+              "path": "cdk",
+              "title": "使用 CDK",
+              "subtitle": "",
+              "contentPath": "/docs/guide/component/cdk.html"
+            },
+            {
+              "id": "first-component",
+              "path": "first-component",
+              "title": "开始编写第一个组件",
+              "subtitle": "",
+              "contentPath": "/docs/guide/component/first-component.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "微前端",
+      "path": "http://planet.ngnice.com",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 官网",
+      "path": "https://angular.io",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 中文版",
+      "path": "https://angular.cn",
+      "isExternal": true
+    }
+  ]
+}
