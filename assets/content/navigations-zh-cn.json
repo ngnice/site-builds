@@ -1,0 +1,274 @@
+{
+  "navs": [
+    {
+      "id": "docs",
+      "path": "docs",
+      "channel_path": "docs",
+      "title": "文档",
+      "items": [
+        {
+          "id": "docs",
+          "path": "docs",
+          "channel_path": "docs",
+          "title": "介绍",
+          "items": [
+            {
+              "id": "intro",
+              "path": "intro",
+              "channel_path": "docs",
+              "title": "认识 Angular",
+              "order": 10,
+              "contentPath": "docs/guide/intro/intro.html"
+            },
+            {
+              "id": "resources",
+              "path": "resources",
+              "channel_path": "docs",
+              "title": "资源推荐",
+              "order": 100,
+              "contentPath": "docs/guide/intro/resources.html"
+            }
+          ],
+          "order": 10
+        },
+        {
+          "id": "docs/component",
+          "path": "docs/component",
+          "channel_path": "docs",
+          "title": "组件库开发",
+          "items": [
+            {
+              "id": "initialization",
+              "path": "component/initialization",
+              "channel_path": "docs",
+              "title": "初始化环境",
+              "order": 10,
+              "contentPath": "docs/guide/component/initialization.html"
+            },
+            {
+              "id": "first-component",
+              "path": "component/first-component",
+              "channel_path": "docs",
+              "title": "开始编写第一个组件",
+              "order": 20,
+              "contentPath": "docs/guide/component/first-component.html"
+            },
+            {
+              "id": "cdk",
+              "path": "component/cdk",
+              "channel_path": "docs",
+              "title": "使用 CDK",
+              "order": 30,
+              "contentPath": "docs/guide/component/cdk.html"
+            }
+          ],
+          "order": 20
+        },
+        {
+          "id": "docs/more",
+          "path": "docs/more",
+          "channel_path": "docs",
+          "title": "更多",
+          "items": [
+            {
+              "id": "about",
+              "path": "more/about",
+              "channel_path": "docs",
+              "title": "关于",
+              "order": 100,
+              "contentPath": "docs/guide/more/about.html"
+            }
+          ],
+          "order": 30
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "rxjs",
+      "path": "rxjs",
+      "channel_path": "rxjs",
+      "title": "RxJS",
+      "items": [
+        {
+          "id": "intro",
+          "path": "into",
+          "channel_path": "rxjs",
+          "title": "介绍",
+          "order": 10,
+          "contentPath": "docs/rxjs/intro.html"
+        },
+        {
+          "id": "observable",
+          "path": "observable",
+          "channel_path": "rxjs",
+          "title": "Observable - 可观察的",
+          "order": 20,
+          "contentPath": "docs/rxjs/observable.html"
+        },
+        {
+          "id": "observer",
+          "path": "observer",
+          "channel_path": "rxjs",
+          "title": "Observer - 观察者",
+          "order": 30,
+          "contentPath": "docs/rxjs/observer.html"
+        },
+        {
+          "id": "operators",
+          "path": "operators",
+          "channel_path": "rxjs",
+          "title": "Operators - 操作符",
+          "order": 40,
+          "contentPath": "docs/rxjs/operators.html"
+        },
+        {
+          "id": "subscription",
+          "path": "subscription",
+          "channel_path": "rxjs",
+          "title": "Subscription - 订阅",
+          "order": 50,
+          "contentPath": "docs/rxjs/subscription.html"
+        },
+        {
+          "id": "subjects",
+          "path": "subjects",
+          "channel_path": "rxjs",
+          "title": "Subjects - 主题",
+          "order": 60,
+          "contentPath": "docs/rxjs/subjects.html"
+        },
+        {
+          "id": "scheduler",
+          "path": "scheduler",
+          "channel_path": "rxjs",
+          "title": "Scheduler - 调度程序",
+          "order": 70,
+          "contentPath": "docs/rxjs/scheduler.html"
+        }
+      ],
+      "order": 20
+    },
+    {
+      "title": "微前端",
+      "path": "https://github.com/worktile/ngx-planet",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 官网",
+      "path": "https://angular.io",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 中文版",
+      "path": "https://angular.cn",
+      "isExternal": true
+    }
+  ],
+  "docs": [
+    {
+      "id": "cdk",
+      "path": "component/cdk",
+      "channel_path": "docs",
+      "title": "使用 CDK",
+      "order": 30,
+      "contentPath": "docs/guide/component/cdk.html"
+    },
+    {
+      "id": "first-component",
+      "path": "component/first-component",
+      "channel_path": "docs",
+      "title": "开始编写第一个组件",
+      "order": 20,
+      "contentPath": "docs/guide/component/first-component.html"
+    },
+    {
+      "id": "initialization",
+      "path": "component/initialization",
+      "channel_path": "docs",
+      "title": "初始化环境",
+      "order": 10,
+      "contentPath": "docs/guide/component/initialization.html"
+    },
+    {
+      "id": "intro",
+      "path": "intro",
+      "channel_path": "docs",
+      "title": "认识 Angular",
+      "order": 10,
+      "contentPath": "docs/guide/intro/intro.html"
+    },
+    {
+      "id": "resources",
+      "path": "resources",
+      "channel_path": "docs",
+      "title": "资源推荐",
+      "order": 100,
+      "contentPath": "docs/guide/intro/resources.html"
+    },
+    {
+      "id": "about",
+      "path": "more/about",
+      "channel_path": "docs",
+      "title": "关于",
+      "order": 100,
+      "contentPath": "docs/guide/more/about.html"
+    },
+    {
+      "id": "intro",
+      "path": "into",
+      "channel_path": "rxjs",
+      "title": "介绍",
+      "order": 10,
+      "contentPath": "docs/rxjs/intro.html"
+    },
+    {
+      "id": "observable",
+      "path": "observable",
+      "channel_path": "rxjs",
+      "title": "Observable - 可观察的",
+      "order": 20,
+      "contentPath": "docs/rxjs/observable.html"
+    },
+    {
+      "id": "observer",
+      "path": "observer",
+      "channel_path": "rxjs",
+      "title": "Observer - 观察者",
+      "order": 30,
+      "contentPath": "docs/rxjs/observer.html"
+    },
+    {
+      "id": "operators",
+      "path": "operators",
+      "channel_path": "rxjs",
+      "title": "Operators - 操作符",
+      "order": 40,
+      "contentPath": "docs/rxjs/operators.html"
+    },
+    {
+      "id": "scheduler",
+      "path": "scheduler",
+      "channel_path": "rxjs",
+      "title": "Scheduler - 调度程序",
+      "order": 70,
+      "contentPath": "docs/rxjs/scheduler.html"
+    },
+    {
+      "id": "subjects",
+      "path": "subjects",
+      "channel_path": "rxjs",
+      "title": "Subjects - 主题",
+      "order": 60,
+      "contentPath": "docs/rxjs/subjects.html"
+    },
+    {
+      "id": "subscription",
+      "path": "subscription",
+      "channel_path": "rxjs",
+      "title": "Subscription - 订阅",
+      "order": 50,
+      "contentPath": "docs/rxjs/subscription.html"
+    }
+  ]
+}
