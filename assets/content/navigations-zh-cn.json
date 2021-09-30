@@ -1,0 +1,360 @@
+{
+  "navs": [
+    {
+      "id": "docs",
+      "path": "docs",
+      "channelPath": "docs",
+      "title": "文档",
+      "items": [
+        {
+          "id": "docs",
+          "path": "docs",
+          "channelPath": "docs",
+          "title": "介绍",
+          "items": [
+            {
+              "id": "intro",
+              "path": "intro",
+              "channelPath": "docs",
+              "title": "认识 Angular",
+              "order": 10,
+              "toc": "content",
+              "contentPath": "docs/guide/intro/intro.html",
+              "originPath": "docs/guide/intro/intro.md"
+            },
+            {
+              "id": "resources",
+              "path": "resources",
+              "channelPath": "docs",
+              "title": "资源推荐",
+              "order": 100,
+              "toc": "content",
+              "contentPath": "docs/guide/intro/resources.html",
+              "originPath": "docs/guide/intro/resources.md"
+            }
+          ],
+          "order": 10
+        },
+        {
+          "id": "docs/component",
+          "path": "docs/component",
+          "channelPath": "docs",
+          "title": "组件库开发",
+          "items": [
+            {
+              "id": "initialization",
+              "path": "component/initialization",
+              "channelPath": "docs",
+              "title": "初始化环境",
+              "order": 10,
+              "toc": "content",
+              "contentPath": "docs/guide/component/initialization.html",
+              "originPath": "docs/guide/component/initialization.md"
+            },
+            {
+              "id": "first-component",
+              "path": "component/first-component",
+              "channelPath": "docs",
+              "title": "开始编写第一个组件",
+              "order": 20,
+              "toc": "content",
+              "contentPath": "docs/guide/component/first-component.html",
+              "originPath": "docs/guide/component/first-component.md"
+            },
+            {
+              "id": "cdk",
+              "path": "component/cdk",
+              "channelPath": "docs",
+              "title": "使用 CDK",
+              "order": 30,
+              "toc": "content",
+              "contentPath": "docs/guide/component/cdk.html",
+              "originPath": "docs/guide/component/cdk.md"
+            }
+          ],
+          "order": 20
+        },
+        {
+          "id": "docs/more",
+          "path": "docs/more",
+          "channelPath": "docs",
+          "title": "更多",
+          "items": [
+            {
+              "id": "about",
+              "path": "more/about",
+              "channelPath": "docs",
+              "title": "关于",
+              "order": 100,
+              "toc": "content",
+              "contentPath": "docs/guide/more/about.html",
+              "originPath": "docs/guide/more/about.md"
+            }
+          ],
+          "order": 30
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "rxjs",
+      "path": "rxjs",
+      "channelPath": "rxjs",
+      "title": "RxJS",
+      "items": [
+        {
+          "id": "intro",
+          "path": "into",
+          "channelPath": "rxjs",
+          "title": "介绍",
+          "order": 10,
+          "toc": "content",
+          "contentPath": "docs/rxjs/intro.html",
+          "originPath": "docs/rxjs/intro.md"
+        },
+        {
+          "id": "observable",
+          "path": "observable",
+          "channelPath": "rxjs",
+          "title": "Observable - 可观察的",
+          "order": 20,
+          "toc": "content",
+          "contentPath": "docs/rxjs/observable.html",
+          "originPath": "docs/rxjs/observable.md"
+        },
+        {
+          "id": "observer",
+          "path": "observer",
+          "channelPath": "rxjs",
+          "title": "Observer - 观察者",
+          "order": 30,
+          "toc": "content",
+          "contentPath": "docs/rxjs/observer.html",
+          "originPath": "docs/rxjs/observer.md"
+        },
+        {
+          "id": "operators",
+          "path": "operators",
+          "channelPath": "rxjs",
+          "title": "Operators - 操作符",
+          "order": 40,
+          "toc": "content",
+          "contentPath": "docs/rxjs/operators.html",
+          "originPath": "docs/rxjs/operators.md"
+        },
+        {
+          "id": "subscription",
+          "path": "subscription",
+          "channelPath": "rxjs",
+          "title": "Subscription - 订阅",
+          "order": 50,
+          "toc": "content",
+          "contentPath": "docs/rxjs/subscription.html",
+          "originPath": "docs/rxjs/subscription.md"
+        },
+        {
+          "id": "subjects",
+          "path": "subjects",
+          "channelPath": "rxjs",
+          "title": "Subjects - 主题",
+          "order": 60,
+          "toc": "content",
+          "contentPath": "docs/rxjs/subjects.html",
+          "originPath": "docs/rxjs/subjects.md"
+        },
+        {
+          "id": "scheduler",
+          "path": "scheduler",
+          "channelPath": "rxjs",
+          "title": "Scheduler - 调度器",
+          "order": 70,
+          "toc": "content",
+          "contentPath": "docs/rxjs/scheduler.html",
+          "originPath": "docs/rxjs/scheduler.md"
+        }
+      ],
+      "order": 20
+    },
+    {
+      "title": "微前端",
+      "path": "https://github.com/worktile/ngx-planet",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 官网",
+      "path": "https://angular.io",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 中文版",
+      "path": "https://angular.cn",
+      "isExternal": true
+    }
+  ],
+  "docs": [
+    {
+      "id": "cdk",
+      "path": "component/cdk",
+      "channelPath": "docs",
+      "title": "使用 CDK",
+      "order": 30,
+      "toc": "content",
+      "contentPath": "docs/guide/component/cdk.html",
+      "originPath": "docs/guide/component/cdk.md"
+    },
+    {
+      "id": "first-component",
+      "path": "component/first-component",
+      "channelPath": "docs",
+      "title": "开始编写第一个组件",
+      "order": 20,
+      "toc": "content",
+      "contentPath": "docs/guide/component/first-component.html",
+      "originPath": "docs/guide/component/first-component.md"
+    },
+    {
+      "id": "initialization",
+      "path": "component/initialization",
+      "channelPath": "docs",
+      "title": "初始化环境",
+      "order": 10,
+      "toc": "content",
+      "contentPath": "docs/guide/component/initialization.html",
+      "originPath": "docs/guide/component/initialization.md"
+    },
+    {
+      "id": "intro",
+      "path": "intro",
+      "channelPath": "docs",
+      "title": "认识 Angular",
+      "order": 10,
+      "toc": "content",
+      "contentPath": "docs/guide/intro/intro.html",
+      "originPath": "docs/guide/intro/intro.md"
+    },
+    {
+      "id": "resources",
+      "path": "resources",
+      "channelPath": "docs",
+      "title": "资源推荐",
+      "order": 100,
+      "toc": "content",
+      "contentPath": "docs/guide/intro/resources.html",
+      "originPath": "docs/guide/intro/resources.md"
+    },
+    {
+      "id": "about",
+      "path": "more/about",
+      "channelPath": "docs",
+      "title": "关于",
+      "order": 100,
+      "toc": "content",
+      "contentPath": "docs/guide/more/about.html",
+      "originPath": "docs/guide/more/about.md"
+    },
+    {
+      "id": "intro",
+      "path": "into",
+      "channelPath": "rxjs",
+      "title": "介绍",
+      "order": 10,
+      "toc": "content",
+      "contentPath": "docs/rxjs/intro.html",
+      "originPath": "docs/rxjs/intro.md"
+    },
+    {
+      "id": "observable",
+      "path": "observable",
+      "channelPath": "rxjs",
+      "title": "Observable - 可观察的",
+      "order": 20,
+      "toc": "content",
+      "contentPath": "docs/rxjs/observable.html",
+      "originPath": "docs/rxjs/observable.md"
+    },
+    {
+      "id": "observer",
+      "path": "observer",
+      "channelPath": "rxjs",
+      "title": "Observer - 观察者",
+      "order": 30,
+      "toc": "content",
+      "contentPath": "docs/rxjs/observer.html",
+      "originPath": "docs/rxjs/observer.md"
+    },
+    {
+      "id": "operators",
+      "path": "operators",
+      "channelPath": "rxjs",
+      "title": "Operators - 操作符",
+      "order": 40,
+      "toc": "content",
+      "contentPath": "docs/rxjs/operators.html",
+      "originPath": "docs/rxjs/operators.md"
+    },
+    {
+      "id": "scheduler",
+      "path": "scheduler",
+      "channelPath": "rxjs",
+      "title": "Scheduler - 调度器",
+      "order": 70,
+      "toc": "content",
+      "contentPath": "docs/rxjs/scheduler.html",
+      "originPath": "docs/rxjs/scheduler.md"
+    },
+    {
+      "id": "subjects",
+      "path": "subjects",
+      "channelPath": "rxjs",
+      "title": "Subjects - 主题",
+      "order": 60,
+      "toc": "content",
+      "contentPath": "docs/rxjs/subjects.html",
+      "originPath": "docs/rxjs/subjects.md"
+    },
+    {
+      "id": "subscription",
+      "path": "subscription",
+      "channelPath": "rxjs",
+      "title": "Subscription - 订阅",
+      "order": 50,
+      "toc": "content",
+      "contentPath": "docs/rxjs/subscription.html",
+      "originPath": "docs/rxjs/subscription.md"
+    }
+  ],
+  "homeMeta": {
+    "title": "首页",
+    "hero": {
+      "title": "NG-NICE",
+      "description": "努力打造成 Angular 开发者提供优质的内容的平台",
+      "backgroundColor": "#f5f6f8",
+      "actions": [
+        {
+          "text": "认识 Angular",
+          "link": "/docs/intro",
+          "btnShape": "round,",
+          "btnType": "outline-primary-light"
+        }
+      ]
+    },
+    "features": [
+      {
+        "icon": "https://cdn.pingcode.com/open-sources/docgeni/home/feature4.png",
+        "title": "资源推荐",
+        "description": "提供 Angular 相关的资源推荐，包括组件库，开发工具，状态管理以及优秀网站"
+      },
+      {
+        "icon": "https://cdn.worktile.com/open-sources/ngx-tethys/home/feature5.png",
+        "title": "Angular 入门",
+        "description": "提供 Angular 入门相关文档"
+      },
+      {
+        "icon": "https://cdn.pingcode.com/open-sources/docgeni/home/feature4.png",
+        "title": "最佳实践",
+        "description": "提供 Angular 的最佳实践教程"
+      }
+    ],
+    "contentPath": "docs/index.html"
+  }
+}
