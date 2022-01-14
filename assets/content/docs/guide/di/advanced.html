@@ -1,0 +1,359 @@
+<p>接下来我简单的列举一些使用 Angular 依赖注入比较重要的高级技巧，也是官方文档中涵盖的知识点：</p>
+<div class="dg-paragraph"><img src="assets/images/di/advanced-01.png" alt="image.png"></div>
+
+        <h2 id="轻量级注入令牌" class="docs-header-link">
+          <span header-link="轻量级注入令牌"></span>
+          轻量级注入令牌
+        </h2>
+      <p>在我们开发类库的时候，支持摇树优化是一个重要的特性，要减少体积，那么在 Angular 类库中需要做以下几点：</p>
+<ul>
+<li>分模块打包和导入，按钮模块和模态框模块分别打包</li>
+<li>服务尽量使用<code>@Injectable({ provideIn: &quot;root&quot; | &quot;any&quot;})</code>优先</li>
+<li>使用轻量级注入 Token</li>
+</ul>
+
+        <h3 id="令牌什么时候会被保留" class="docs-header-link">
+          <span header-link="令牌什么时候会被保留"></span>
+          令牌什么时候会被保留
+        </h3>
+      <p>那么在同一个组件模块中，提供了很多个组件，如果只想打包被使用的组件如何做呢？</p>
+<p>比如我们定义如下的一个 card 组件，包含了 header，同时 card 组件中需要获取 header 组件示例。</p>
+<pre class="language-html"><code class="language-html"><div><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>lib-card</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>lib-header</span><span class="token punctuation">></span></span>...<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>lib-header</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>lib-card</span><span class="token punctuation">></span></span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-header'</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibHeaderComponent</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-card'</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibCardComponent</span> <span class="token punctuation">{</span>
+  @<span class="token function">ContentChild</span><span class="token punctuation">(</span>LibHeaderComponent<span class="token punctuation">)</span>
+  header<span class="token punctuation">:</span> LibHeaderComponent<span class="token operator">|</span><span class="token keyword">null</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>因为<code>&lt;lib-header&gt;</code>是可选的，所以元素可以用最小化的形式<code>&lt;lib-card&gt;&lt;/lib-card&gt;</code>出现在模板中，在这个例子中，   <code>&lt;lib-header&gt;</code>没有用过，你可能期望它会被摇树优化掉。</p>
+<p>但是因为代码中出现了如下的一段导致无法被优化：</p>
+<div class="dg-paragraph"><code>@ContentChild(LibHeaderComponent) header: LibHeaderComponent;</code></div>
+<ul>
+<li>其中一个引用位于 <strong>类型位置</strong> 上 - 即，它把<code>LibHeaderComponent</code>用作了类型：<code>header: LibHeaderComponent; </code>。</li>
+<li>另一个引用位于 <strong>值的位置</strong> - 即，<code>LibHeaderComponent</code>是<code>@ContentChild()</code>参数装饰器的值：   <code>@ContentChild(LibHeaderComponent)</code>。</li>
+</ul>
+<p>编译器对这些位置的令牌引用的处理方式时不同的。</p>
+<ul>
+<li>编译器在从 TypeScript 转换完后会删除这些  <strong>类型位置</strong>  上的引用，所以它们对于摇树优化没什么影响</li>
+<li>编译器必须在运行时保留  <strong>值位置</strong>  上的引用，这就会阻止该组件被摇树优化掉。</li>
+</ul>
+
+        <h3 id="什么时候使用轻量级注入令牌模式" class="docs-header-link">
+          <span header-link="什么时候使用轻量级注入令牌模式"></span>
+          什么时候使用轻量级注入令牌模式
+        </h3>
+      <p>当一个组件被用作注入令牌时，就会出现摇树优化的问题，有两种情况:</p>
+<ul>
+<li>令牌用在内容查询中值的位置上， 也就是<code>@ContentChild</code>或者<code>@ViewChild</code>等查询装饰器</li>
+<li>该令牌用作构造函数注入的类型说明符，<code>@Inject(OtherComponent)</code>, 下面的代码虽然没有出现 @Inject()，通过前面的章节可以知道这只是简写而已。</li>
+</ul>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">class</span> <span class="token class-name">MyComponent</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> other<span class="token punctuation">:</span> OtherComponent<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+  @<span class="token function">ContentChild</span><span class="token punctuation">(</span>OtherComponent<span class="token punctuation">)</span>
+  other<span class="token punctuation">:</span> OtherComponent<span class="token operator">|</span><span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+
+        <h3 id="使用轻量级注入令牌" class="docs-header-link">
+          <span header-link="使用轻量级注入令牌"></span>
+          使用轻量级注入令牌
+        </h3>
+      <p>轻量级注入令牌设计模式简单理解就是：<strong>使用一个小的抽象类作为注入令牌，并在稍后为它提供实际实现，该抽象类固然会被留下（不会被摇树优化掉），但它很小，对应用程序的大小没有任何重大影响。</strong></p>
+<pre class="language-ts"><code class="language-ts"><div>abstract <span class="token keyword">class</span> <span class="token class-name">LibHeaderToken</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-header'</span><span class="token punctuation">,</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>provide<span class="token punctuation">:</span> LibHeaderToken<span class="token punctuation">,</span> useExisting<span class="token punctuation">:</span> LibHeaderComponent<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibHeaderComponent</span> <span class="token keyword">extends</span> <span class="token class-name">LibHeaderToken</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-card'</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibCardComponent</span> <span class="token punctuation">{</span>
+  @<span class="token function">ContentChild</span><span class="token punctuation">(</span>LibHeaderToken<span class="token punctuation">)</span> header<span class="token punctuation">:</span> LibHeaderToken<span class="token operator">|</span><span class="token keyword">null</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>总结一下，轻量级注入令牌模式由以下几部分组成。</p>
+<ul>
+<li>一个轻量级的注入令牌，它表现为一个抽象类。</li>
+<li>一个实现该抽象类的组件定义。</li>
+<li>注入这种轻量级模式时使用<code>@ContentChild()</code>或者<code>@ContentChildren()</code>。</li>
+<li>实现轻量级注入令牌的提供者，它将轻量级注入令牌和它的实现关联起来。</li>
+</ul>
+
+        <h3 id="使用轻量级注入令牌进行-api-定义" class="docs-header-link">
+          <span header-link="使用轻量级注入令牌进行-api-定义"></span>
+          使用轻量级注入令牌进行 API 定义
+        </h3>
+      <p>为了有类型提示，我们可以为这个轻量级令牌定义函数和属性，不是这个抽象类加多少个 API 定义都不会影响体积，因为 TS 编译后类型都会丢失，加类型只是为了在开发模式下类型更加安全。</p>
+<pre class="language-ts"><code class="language-ts"><div>abstract <span class="token keyword">class</span> <span class="token class-name">LibHeaderToken</span> <span class="token punctuation">{</span>
+  name<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">;</span>
+  abstract <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-header'</span><span class="token punctuation">,</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>provide<span class="token punctuation">:</span> LibHeaderToken<span class="token punctuation">,</span> useExisting<span class="token punctuation">:</span> LibHeaderComponent<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibHeaderComponent</span> <span class="token keyword">extends</span> <span class="token class-name">LibHeaderToken</span> <span class="token punctuation">{</span>
+  <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Concrete implementation of `doSomething`</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'lib-card'</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">LibCardComponent</span> implement AfterContentInit <span class="token punctuation">{</span>
+  @<span class="token function">ContentChild</span><span class="token punctuation">(</span>LibHeaderToken<span class="token punctuation">)</span>
+  header<span class="token punctuation">:</span> LibHeaderToken<span class="token operator">|</span><span class="token keyword">null</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+  <span class="token function">ngAfterContentInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>header <span class="token operator">&amp;&amp;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>header<span class="token punctuation">.</span><span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+</div></code></pre>
+
+        <h3 id="为你的轻量级注入令牌命名" class="docs-header-link">
+          <span header-link="为你的轻量级注入令牌命名"></span>
+          为你的轻量级注入令牌命名
+        </h3>
+      <p>轻量级注入令牌只对组件有用。</p>
+<ul>
+<li><strong>LibHeaderComponent</strong> 遵循 <strong>Component</strong> 后缀命名约定</li>
+<li><strong>LibHeaderToken</strong> 遵循轻量级注入令牌命名约定。推荐的写法是使用组件基本名加上后缀 <strong>Token</strong></li>
+</ul>
+
+        <h3 id="解决组件循环引用" class="docs-header-link">
+          <span header-link="解决组件循环引用"></span>
+          解决组件循环引用
+        </h3>
+      <p>使用轻量级 Token 不仅仅可以减少体积，还可以解决循环引用的问题，具体可以查看 <a target="_blank" href="https://angular.cn/errors/NG3003">https://angular.cn/errors/NG3003</a>  </p>
+
+        <h2 id="惰性加载特性模块" class="docs-header-link">
+          <span header-link="惰性加载特性模块"></span>
+          惰性加载特性模块
+        </h2>
+      <p>默认情况下，<code>NgModule</code>都是急性加载的，也就是说它会在应用加载时尽快加载。</p>
+<p>对于带有很多路由的大型应用，肯定会使用惰性加载(一种按需加载 NgModule 的模式)。</p>
+
+        <h3 id="惰性加载入门" class="docs-header-link">
+          <span header-link="惰性加载入门"></span>
+          惰性加载入门
+        </h3>
+      <p>路由定义时使用<code>loadChildren</code>并动态 import 并返回模块:</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">const</span> routes<span class="token punctuation">:</span> Routes <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    path<span class="token punctuation">:</span> <span class="token string">'items'</span><span class="token punctuation">,</span>
+    loadChildren<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token keyword">import</span><span class="token punctuation">(</span><span class="token string">'./items/items.module'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>m <span class="token operator">=</span><span class="token operator">></span> m<span class="token punctuation">.</span>ItemsModule<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span></div></code></pre>
+<p>惰性加载模块使用<code>forChild</code>定义路由:</p>
+<pre class="language-ts"><code class="language-ts"><div>RouterModule<span class="token punctuation">.</span><span class="token function">forChild</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+   <span class="token punctuation">{</span>
+     path<span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+     component<span class="token punctuation">:</span> ItemsComponent
+   <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span></div></code></pre>
+<div class="dg-paragraph"><alert>确保从<code>AppModule</code>中移除了<code>ItemsModule</code>模块。</alert></div>
+
+        <h3 id="如何设置惰性加载" class="docs-header-link">
+          <span header-link="如何设置惰性加载"></span>
+          如何设置惰性加载
+        </h3>
+      <p>建立惰性加载的特性模块有两个主要步骤：</p>
+<ul>
+<li>使用<code>--route</code>标志，用 CLI 创建特性模块。<code>ng generate module customers --route customers --module app.module</code></li>
+<li>配置相关路由</li>
+</ul>
+
+        <h3 id="懒加载和急性加载的区别？" class="docs-header-link">
+          <span header-link="懒加载和急性加载的区别？"></span>
+          懒加载和急性加载的区别？
+        </h3>
+      <p>唯一区别就是会：<strong>创建子<code>ModuleInjector</code></strong></p>
+<div class="dg-paragraph"><alert>意味着所有的 providers 和 imports 模块的 providers 都是独立的，急性模块并不是知道懒加载模块的 providers。</alert></div>
+
+        <h2 id="forroot()-模式" class="docs-header-link">
+          <span header-link="forroot()-模式"></span>
+          forRoot() 模式
+        </h2>
+      <div class="dg-paragraph"><code>forRoot()</code>与<code>forChild()</code>的区别？</div>
+<p>如果模块同时定义了<code>providers</code>（服务）和<code>declarations</code>（组件、指令、管道），那么，当你同时在多个特性模块中加载此模块时，这些服务就会被注册在多个地方。这会导致出现多个服务实例，并且该服务的行为不再像单例一样。</p>
+<p>防止这种现象：</p>
+<ul>
+<li>用<code>providedIn: &quot;root&quot;</code>语法代替在模块中注册服务的方式</li>
+<li>把你的服务分离到它们自己的模块中</li>
+<li>在模块中分别定义<code>forRoot()</code>和<code>forChild()</code>方法</li>
+</ul>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">static</span> <span class="token function">forRoot</span><span class="token punctuation">(</span>config<span class="token punctuation">:</span> UserServiceConfig<span class="token punctuation">)</span><span class="token punctuation">:</span> ModuleWithProviders<span class="token operator">&lt;</span>GreetingModule<span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    ngModule<span class="token punctuation">:</span> GreetingModule<span class="token punctuation">,</span>
+    providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+      <span class="token punctuation">{</span>provide<span class="token punctuation">:</span> UserServiceConfig<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> config <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>我们在开发类库或者使用第三库时经常会用到<code>forRoot</code>模式，比如官方的路由模块，这种模式的本质还是因为惰性加载的模块会独立创建子模块注入器，但是模块中的组件/指令/管道和服务处理模式不一样导致，这也是 Angular 模块一大难点之一（也可以说是坑）。</p>
+
+        <h2 id="<code>providedin:-&#39;any&#39;</code>" class="docs-header-link">
+          <span header-link="<code>providedin:-&#39;any&#39;</code>"></span>
+          <code>providedIn: &#39;any&#39;</code>
+        </h2>
+      <p>通过使用<code>providedIn: &#39;any&#39;</code>，所有急性加载的模块都会共享同一个服务单例，但是惰性加载模块各自有它们自己独有的单例。</p>
+<div class="dg-paragraph"><img src="assets/images/di/advanced-02.png" alt="image.png"></div>
+
+        <h2 id="reflectiveinjector-和-staticinjector" class="docs-header-link">
+          <span header-link="reflectiveinjector-和-staticinjector"></span>
+          ReflectiveInjector 和 StaticInjector
+        </h2>
+      <p>在 Angular V5 版本之前，内部的注入器是   <strong>ReflectiveInjector</strong>  ，服务不需要通过 @Injectable 标记也可以被使用</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">class</span> <span class="token class-name">B</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Inject</span><span class="token punctuation">(</span>B<span class="token punctuation">)</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> i <span class="token operator">=</span> ReflectiveInjector<span class="token punctuation">.</span><span class="token function">resolveAndCreate</span><span class="token punctuation">(</span><span class="token punctuation">[</span>A<span class="token punctuation">,</span> B<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> a <span class="token operator">=</span> i<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>A<span class="token punctuation">)</span><span class="token punctuation">;</span></div></code></pre>
+<p>下面是<code>Inject</code>装饰器实现的代码片段：</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">function</span> <span class="token function">ParamDecorator</span><span class="token punctuation">(</span>cls<span class="token punctuation">:</span> <span class="token keyword">any</span><span class="token punctuation">,</span> unusedKey<span class="token punctuation">:</span> <span class="token keyword">any</span><span class="token punctuation">,</span> index<span class="token punctuation">:</span> <span class="token keyword">number</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+  <span class="token comment" spellcheck="true">// parameters here will be [ {token: B} ]</span>
+  Reflect<span class="token punctuation">.</span><span class="token function">defineMetadata</span><span class="token punctuation">(</span><span class="token string">'parameters'</span><span class="token punctuation">,</span> parameters<span class="token punctuation">,</span> cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> cls<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><code>ReflectiveInjector</code>依赖于<code>Reflect</code>对象提供的反射能力，来搜集隐式依赖，并通过 reflect-metadata 增强包实现相关功能，但是这种处理方式有一些问题：</div>
+<ul>
+<li><code>ReflectiveInjector</code>依赖<code>Reflect</code>和 reflect-metadata 增强包，兼容性差</li>
+<li>包体积变大</li>
+<li>性能问题，使用反射需要维护一个大的 Map</li>
+</ul>
+<p>使用<code>StaticInjector</code>的代码如下：</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">class</span> <span class="token class-name">B</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">{</span> <span class="token keyword">constructor</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span> <span class="token punctuation">}</span>
+<span class="token keyword">const</span> i <span class="token operator">=</span> Injector<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">{</span>provide<span class="token punctuation">:</span> A<span class="token punctuation">,</span> useClass<span class="token punctuation">:</span> A<span class="token punctuation">,</span> deps<span class="token punctuation">:</span> <span class="token punctuation">[</span>B<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> a <span class="token operator">=</span> i<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>A<span class="token punctuation">)</span><span class="token punctuation">;</span></div></code></pre>
+<p>为什么叫静态注入器，是因为很多依赖关系在编译时就已经确定，我不需要在运行时通过反射获取。</p>
+
+        <h2 id="注入组件/指令/模块/管道" class="docs-header-link">
+          <span header-link="注入组件/指令/模块/管道"></span>
+          注入组件/指令/模块/管道
+        </h2>
+      <p>在 Angular 中不仅仅服务可以注入，所有的内置装饰器<code>@Component()</code>、<code>@Directive()</code>、<code>@Module()</code>、<code>@Pipe()</code>等都可被注入，注入的解析逻辑和服务一样，先从 <code>ElementInjector</code>层级找，再从<code>ModuleInjector</code>层级找，这些都是 Angular 框架底层提供的能力，其实已经超出了依赖注入本身的范畴，所以为什么很难把<code>StaticInjector</code>独立出去呢，因为很多功能和 Angular 的视图强绑定的。</p>
+
+        <h2 id="防止重复导入-coremodule" class="docs-header-link">
+          <span header-link="防止重复导入-coremodule"></span>
+          防止重复导入 CoreModule
+        </h2>
+      <p>只有根模块<code>AppModule</code>才能导入<code>CoreModule</code>，如果一个惰性加载模块也导入了它， 该应用就会为服务生成多个实例，要想防止惰性加载模块重复导入<code>CoreModule</code>，可以添加如下的<code>CoreModule</code>构造函数。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/core/core.module.ts</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> @<span class="token function">SkipSelf</span><span class="token punctuation">(</span><span class="token punctuation">)</span> parentModule<span class="token operator">?</span><span class="token punctuation">:</span> CoreModule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>parentModule<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>
+      <span class="token string">'CoreModule is already loaded. Import it in the AppModule only'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+
+        <h2 id="派生类注入服务" class="docs-header-link">
+          <span header-link="派生类注入服务"></span>
+          派生类注入服务
+        </h2>
+      <p>如果基础组件有依赖注入，必须要在派生类中重新提供和重新注入它们，并将它们通过构造函数传给基类。</p>
+<p>原则：</p>
+<ul>
+<li>让构造函数保持简单 - 构造函数应该只用来初始化变量，获取数据在<code>ngOnInit</code>中进行</li>
+<li>通过覆写排序函数达到自定义行为的目的</li>
+<li>尽量避免使用组件基类，如果需要特别注意生命周期函数</li>
+</ul>
+<div class="dg-paragraph"><img src="assets/images/di/advanced-03.png" alt="image.png">
+<img src="assets/images/di/advanced-04.png" alt="image.png"></div>
+
+        <h2 id="forwardref-打破循环" class="docs-header-link">
+          <span header-link="forwardref-打破循环"></span>
+          forwardRef 打破循环
+        </h2>
+      <p>这是一个很有意思的问题，本质上和 Angular 无关，应该是 JS 特性有关。</p>
+
+        <h3 id="javascript-中的-hoisting（变量提升）" class="docs-header-link">
+          <span header-link="javascript-中的-hoisting（变量提升）"></span>
+          Javascript 中的 Hoisting（变量提升）
+        </h3>
+      <p>我们简单通过下面三个示例了解一下 JS 中的变量提升</p>
+<pre class="language-js"><code class="language-js"><div>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 打印 undefined</span>
+<span class="token keyword">var</span> num<span class="token punctuation">;</span>
+num <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span></div></code></pre>
+<pre class="language-js"><code class="language-js"><div>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">square</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 会打印出 25</span>
+<span class="token comment" spellcheck="true">/* ... */</span>
+<span class="token keyword">function</span> <span class="token function">square</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">return</span> n<span class="token operator">*</span>n <span class="token punctuation">}</span></div></code></pre>
+<pre class="language-js"><code class="language-js"><div>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>square<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 打印 undefined</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">square</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 抛出异常 Uncaught TypeError: square is not a function</span>
+<span class="token keyword">const</span> square <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>n<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> n <span class="token operator">*</span> n<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>通过上述的示例可以得出一下结论：</p>
+<ul>
+<li>变量只有声明被提升，不提升初始化</li>
+<li>函数可以在声明之前调用，函数的声明被提升</li>
+<li>函数和变量相比，会被优先提升</li>
+</ul>
+<p>那么 class 是 ES 2015 的新特性，它的行为和函数不一样，<strong>class 不会被提升</strong>。</p>
+<p>因为提升会带来一些列问题，比如如下代码，是否还有其他原因暂时没有过多了解。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">const</span> Foo <span class="token operator">=</span> <span class="token keyword">class</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">class</span> <span class="token class-name">Bar</span> <span class="token keyword">extends</span> <span class="token class-name">Foo</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// class 如果提升的话这段代码就会报错</span></div></code></pre>
+
+        <h3 id="组件注入-nameservice" class="docs-header-link">
+          <span header-link="组件注入-nameservice"></span>
+          组件注入 NameService
+        </h3>
+      <p>既然 class 不会提升变量，那么如果我在组件后面加一个服务，在 providers 中设置注入提供者就会报错：  <strong>Class &#39;NameService&#39; used before its declaration.</strong></p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    selector<span class="token punctuation">:</span> <span class="token string">'app-forward-ref'</span><span class="token punctuation">,</span>
+    templateUrl<span class="token punctuation">:</span> <span class="token string">'./forward-ref.component.html'</span><span class="token punctuation">,</span>
+    styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./forward-ref.component.scss'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+           provide<span class="token punctuation">:</span> NameService<span class="token punctuation">,</span>
+           useClass<span class="token punctuation">:</span> NameService
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ForwardRefComponent</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">NameService</span> <span class="token punctuation">{</span>
+    name <span class="token operator">=</span> <span class="token string">'why520crazy'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>解决这个问题有2个办法：</p>
+<ul>
+<li>第一就是把<code>NameService</code>移动到<code>ForwardRefComponent</code>组件前</li>
+<li>第二就是使用<code>provide: forwardRef(() =&gt; NameService)</code></li>
+</ul>
+<div class="dg-paragraph"><code>forwardRef</code>实现原理很简单，就是让<code>provide</code>存储一个闭包的函数，在定义式不调用，在注入的时候获取 Token 再调用闭包函数返回<code>NameService</code>的类型，此时 JS 已经完整执行过，<code>NameService</code>已经定义。</div>
+<p>那么此处大家可以想一个有意思的问题，如果在<code>AClass</code>的装饰器<code>MyDecorator</code>传入参数<code>AClass</code>会和上面的结果一样，报   **Class &#39;AClass&#39; used before its declaration. **  错误吗？</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">MyDecorator</span><span class="token punctuation">(</span>AClass<span class="token punctuation">)</span>
+<span class="token keyword">class</span> <span class="token class-name">AClass</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">MyDecorator</span><span class="token punctuation">(</span>type<span class="token punctuation">:</span> <span class="token keyword">Function</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>target<span class="token punctuation">:</span> <span class="token keyword">any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>答案是: 不会</p>
+<p>原因是: TypeScript 在转换装饰器的时候，回把装饰器函数放到类定义的后面。</p>
