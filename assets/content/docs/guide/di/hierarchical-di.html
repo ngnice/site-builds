@@ -1,0 +1,265 @@
+<p>通过依赖注入的概念我们知道，创建实例的工作都交给<code>Ioc 容器</code>（也叫注入器）了，通过构造函数参数装饰器<code>@Inject(DIToken)</code>告诉注入器我们需要注入<code>DIToken</code>对应的依赖值，注入器就会帮我们查找依赖并返回值，Angular 应用启动会默认创建相关的注入器，而且 Angular 的注入器是有层级的，类似于一个 Dom 树。</p>
+<div class="dg-paragraph"><alert>Angular 中依赖注入提供的依赖值都是单例的，为了让不同的模块或者组件可以注入不同的实例，只要让两个组件的有独立的注入器即可，每个注入器都提供同一个依赖，这样就可以实现非全局单例的效果，有了层级注入器后，可以通过层级一层一层往上 <a href="docs/di/hierarchical-di#%E8%A7%A3%E6%9E%90%E8%A7%84%E5%88%99">解析</a> 的规则，可以实现更高级的功能。</alert></div>
+
+        <h2 id="两个注入器层级" class="docs-header-link">
+          <span header-link="两个注入器层级"></span>
+          两个注入器层级
+        </h2>
+      <p>Angular 中有两个注入器层次结构：</p>
+<ul>
+<li><code>ModuleInjector</code> 层次结构 —— 使用<code>@NgModule()</code>或<code>@Injectable()</code>装饰器在此层次结构中配置   <code>ModuleInjector</code>。</li>
+<li><code>ElementInjector</code> 层次结构 —— 在每个 DOM 元素上隐式创建。除非你在<code>@Directive()</code>或<code>@Component()</code>   的   <code>providers</code>属性中进行配置，否则默认情况下，<code>ElementInjector</code>为空。</li>
+</ul>
+
+        <h2 id="moduleinjector" class="docs-header-link">
+          <span header-link="moduleinjector"></span>
+          ModuleInjector
+        </h2>
+      <p>可以通过以下两种方式之一配置<code>ModuleInjector</code>：</p>
+<ul>
+<li>使用<code>@Injectable()</code>的<code>providedIn</code>属性引用<code>NgModuleType</code>、<code>root</code>、<code>platform</code>或者<code>any</code>。</li>
+<li>使用 <code>@NgModule()</code>的 <code>providers</code>数组中配置不同类型的提供者。</li>
+</ul>
+<div class="dg-paragraph"><alert>摇树优化与 @Injectable()，使用<code>@Injectable()</code>的<code>providedIn</code>属性优于<code>@NgModule()</code>的<code>providers</code>数组，因为使用<code>@Injectable()</code>的<code>providedIn</code>时，优化工具可以进行摇树优化，从而删除你的应用程序中未使用的服务，以减小捆绑包尺寸。  摇树优化对于库特别有用，因为使用该库的应用程序不需要注入它。在 服务与依赖注入简介了解关于可摇树优化的提供者的更多信息。</alert></div>
+<div class="dg-paragraph"><strong>需要特别注意：</strong></div>
+<ul>
+<li><code>ModuleInjector</code>由<code>@NgModule.providers</code>和<code>NgModule.imports</code>属性配置。<code>ModuleInjector</code>是可以通过   <code>NgModule.imports</code>递归找到的所有<code>providers</code>数组的扁平化。</li>
+<li>子<code>ModuleInjector</code>是在惰性加载其它<code>@NgModules</code>时创建的。</li>
+</ul>
+<p>第一点的意思就是<code>AppModule</code>导入了<code>FeatureAModule</code>和<code>FeatureBModule</code>，那么 Angular 会根据模块树找到所有模块配置的<code>providers</code>并打平存放到一起，这就意味着整个应用程序所有地方都可以注入这些打平的<code>providers</code>，这就是 Angular 模块下的服务与组件/指令/管道所不同的地方，组件/指令/管道在某个模块定义，只要没有导出，其他模块都无法使用，必须导出才可以被导入该模块的组件使用，其次就是当有重复 DI Token 提供的依赖时，后提供的会覆盖之前提供的。</p>
+<p>第二点可以不严谨的认为整个应用程序只有一个根模块注入器，只有通过路由的懒加载才会创建子模块注入器，因为当懒加载模块  <code>FeatureCModule</code>还没有被加载时，<code>AppModule</code>并不能通过模块树找到<code>FeatureCModule</code>，所以也就无法打平<code>FeatureCModule</code>中的<code>providers</code>，那么解决这种问题有两种做法:</p>
+<ul>
+<li>第一种就是现在的行为，创建一个子模块注入器。</li>
+<li>第二种就是把<code>FeatureCModule</code>中的所有<code>providers</code>动态追加到根模块注入器中。</li>
+</ul>
+<p>第二种做法显然会造成动态加载前后注入不一致的问题，那么只能选择第一种，因为创建了子模块注入器，再加上依赖注入的 <a href="docs/di/hierarchical-di#%E8%A7%A3%E6%9E%90%E8%A7%84%E5%88%99">解析规则</a>，所以会导致惰性加载的模块注入服务和根模块注入器注入不一致的一些列行为。</p>
+
+        <h2 id="<strong>platform-和-root-注入器</strong>" class="docs-header-link">
+          <span header-link="<strong>platform-和-root-注入器</strong>"></span>
+          <strong>Platform 和 Root 注入器</strong>
+        </h2>
+      <p>除了惰性加载模块提供的<code>providers</code>外，所有模块的<code>providers</code>和<code>@Injectable({providedIn: &quot;root&quot;})</code>供应商都是在 <code>root</code>根注入器中提供的，其实在<code>root</code>之上还有两个注入器，一个是额外的平台<code>ModuleInjector</code>，一个是   <code>NullInjector</code>。</p>
+<div class="dg-paragraph"><img src="assets/images/di/hierarchical-01.png" alt="image.png"></div>
+<p>我们简单看一下 Angular 应用的启动过程</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token function">platformBrowserDynamic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">bootstrapModule</span><span class="token punctuation">(</span>AppModule<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>ref <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">)</span></div></code></pre>
+<ul>
+<li><code>bootstrapModule()</code>方法会创建一个由<code>AppModule</code>配置的注入器作为平台注入器的子注入器，也就是根<code>ModuleInjector</code>。</li>
+<li><code>platformBrowserDynamic()</code>方法创建一个由<code>PlatformModule</code>配置的注入器，该注入器包含特定平台的依赖项，这允许多个应用共享同一套平台配置。例如，无论你运行多少个应用程序，浏览器都只有一个 URL 栏，你可以使用<code>platformBrowser()</code> 函数提供<code>extraProviders</code>，从而在平台级别配置特定平台的额外提供者。</li>
+<li>层次结构中的顶级父注入器是<code>NullInjector()</code>，它是树的顶部。如果你在树中向上走了很远，以至于要在<code>NullInjector()</code>中寻找服务，那么除非使用<code> @Optional()</code>，否则将收到错误消息。</li>
+</ul>
+<p>对于普通的开发者而言，我们一般接触不到平台注入器和<code>NullInjector</code>，可以假设整个应用程序只有一个根模块注入器（排除懒加载模块的子模块注入器）。</p>
+
+        <h2 id="<strong>elementinjector</strong>" class="docs-header-link">
+          <span header-link="<strong>elementinjector</strong>"></span>
+          <strong>ElementInjector</strong>
+        </h2>
+      <p>除了模块注入器外，<code>Angular</code>会为每个 DOM 元素隐式创建<code>ElementInjector</code></p>
+<p>可以用<code>@Component()</code>装饰器中的<code>providers</code>或<code>viewProviders</code>属性来配置<code>ElementInjector</code>以提供服务或者依赖值。</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> ItemService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span> name<span class="token punctuation">:</span> <span class="token string">'lamp'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TestComponent</span></div></code></pre>
+<ul>
+<li>在组件中提供服务时，可以通过<code>ElementInjector</code>在该组件以及子组件/指令处通过注入令牌使用该服务</li>
+<li>当组件实例被销毁时，该服务实例也将被销毁</li>
+<li>组件是一种特殊类型的指令，这意味着<code>@Directive()</code>和<code>@Component()</code>都具有<code>providers</code>属性</li>
+</ul>
+
+        <h2 id="解析规则" class="docs-header-link">
+          <span header-link="解析规则"></span>
+          解析规则
+        </h2>
+      <p>前面已经介绍了 Angular 会有2个层级的注入器，那么当组件/指令解析令牌时，Angular 分为两个阶段来解析它：</p>
+<ul>
+<li>针对<code>ElementInjector</code>层次结构（其父级）</li>
+<li>针对<code>ModuleInjector</code>层次结构（其父级）</li>
+</ul>
+<p>Angular 会先从当前组件/指令的<code>ElementInjector</code>查找令牌，找不到会去父组件中查找，直到根组件，如果根还找不到，就去当前组件所在的模块注入器中查找，如果不是懒加载那么就是根注入器，一步一步到最顶层的<code>NullInjector</code>，整个解析过程如下所示：</p>
+<div class="dg-paragraph"><img src="assets/images/di/hierarchical-02.png" alt="image.png"></div>
+
+        <h2 id="解析修饰符" class="docs-header-link">
+          <span header-link="解析修饰符"></span>
+          解析修饰符
+        </h2>
+      <p>默认情况下，<code>Angular</code>始终从当前的<code>Injector</code>开始，并一直向上搜索，修饰符可以更改开始（默认是自己）或结束位置，从而达到一些高级的使用场景，Angular 中可以使用<code>@Optional()</code>，<code>@Self()</code>，<code>@SkipSelf()</code>和<code>@Host()</code>来修饰 Angular 的解析行为，每个修饰符的说明如下：</p>
+<div class="dg-paragraph"><strong>@Optional()</strong></div>
+<div class="dg-paragraph"><code>@Optional()</code>   允许 Angular 将你注入的服务视为可选服务。这样，如果无法在运行时解析它，Angular 只会将服务解析为 null，而不会抛出错误。</div>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">OptionalComponent</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> optional<span class="token operator">?</span><span class="token punctuation">:</span> OptionalService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><strong>@Self()</strong></div>
+<p>使用<code>@Self()</code>让 Angular 仅查看当前组件或指令的<code>ElementInjector</code>。</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-self'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./self.component.html'</span><span class="token punctuation">,</span>
+  styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./self.component.css'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> FlowerService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span> emoji<span class="token punctuation">:</span> <span class="token string">'🌼'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SelfComponent</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Self</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> flower<span class="token punctuation">:</span> FlowerService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>和<code>@Optional()</code>组合使用。</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-self-no-data'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./self-no-data.component.html'</span><span class="token punctuation">,</span>
+  styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./self-no-data.component.css'</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SelfNoDataComponent</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Self</span><span class="token punctuation">(</span><span class="token punctuation">)</span> @<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> flower<span class="token operator">?</span><span class="token punctuation">:</span> FlowerService<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><strong>@SkipSelf()</strong></div>
+<div class="dg-paragraph"><code>@SkipSelf()</code>与<code>@Self()</code>相反，使用<code>@SkipSelf()</code>，Angular 在父<code>ElementInjector</code>中开始搜索服务，而不是从当前 <code>ElementInjector</code>中开始搜索服务。</div>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    providedIn<span class="token punctuation">:</span> <span class="token string">'root'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">FlowerService</span> <span class="token punctuation">{</span>
+    emoji <span class="token operator">=</span> <span class="token string">'🌿'</span><span class="token punctuation">;</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">import</span> <span class="token punctuation">{</span> Component<span class="token punctuation">,</span> OnInit<span class="token punctuation">,</span> SkipSelf <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> FlowerService <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../flower.service'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    selector<span class="token punctuation">:</span> <span class="token string">'app-skipself'</span><span class="token punctuation">,</span>
+    templateUrl<span class="token punctuation">:</span> <span class="token string">'./skipself.component.html'</span><span class="token punctuation">,</span>
+    styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./skipself.component.scss'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    providers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> FlowerService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span> emoji<span class="token punctuation">:</span> <span class="token string">'🍁'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SkipselfComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnInit</span> <span class="token punctuation">{</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">SkipSelf</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> flower<span class="token punctuation">:</span> FlowerService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</div></code></pre>
+<p>上面的示例会得到根注入器中的 🌿，而不是组件所在的<code>ElementInjector</code>中提供的 🍁。</p>
+<p>如果值为 null 可以同时使用<code>@SkipSelf()</code>和<code>@Optional()</code>来防止错误。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">class</span> <span class="token class-name">Person</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> @<span class="token function">SkipSelf</span><span class="token punctuation">(</span><span class="token punctuation">)</span> parent<span class="token operator">?</span><span class="token punctuation">:</span> Person<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><strong>@Host()</strong></div>
+<div class="dg-paragraph"><code>@Host()</code>使你可以在搜索提供者时将当前组件指定为注入器树的最后一站，即使树的更上级有一个服务实例，Angular 也不会继续寻找。</div>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-host'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./host.component.html'</span><span class="token punctuation">,</span>
+  styleUrls<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'./host.component.css'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token comment" spellcheck="true">//  provide the service</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> FlowerService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span> emoji<span class="token punctuation">:</span> <span class="token string">'🌼'</span> <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HostComponent</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// use @Host() in the constructor when injecting the service</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Host</span><span class="token punctuation">(</span><span class="token punctuation">)</span> @<span class="token function">Optional</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">public</span> flower<span class="token operator">?</span><span class="token punctuation">:</span> FlowerService<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>由于<code>HostComponent</code>在其构造函数中具有<code>@Host()</code>，因此，无论<code>HostComponent</code>的父级是否可能有<code>flower.emoji</code>   值，该<code>HostComponent</code>都将使用 🌼（黄色花朵）。</p>
+<p>那么问题来了 <strong>@Host</strong> 和 <strong>@Self</strong> 到底有什么区别？</p>
+<div class="dg-paragraph"><alert><strong>@Host</strong> 属性装饰器会禁止在宿主组件以上的搜索，宿主组件通常就是请求该依赖的那个组件，不过，当该组件投影进某个父组件时，那个父组件就会变成宿主，意思就是 ng-content 中的组件所在的宿主组件不是自己，而是 ng-content 提供的父组件。比如 <code>&lt;host-comp&gt;&lt;sub-comp&gt;&lt;/sub-comp&gt;&lt;/host-comp&gt;</code> 中，<code>sub-comp</code>的宿主组件是<code>host-comp</code>。</alert></div>
+<p>注：</p>
+<div class="dg-paragraph"><alert>所有修饰符都可以组合使用，但是不能互斥，比如： <strong>@Self()</strong> 和 <strong>@SkipSelf</strong> , <strong>@Host()</strong> 和 <strong>@Self()</strong></alert></div>
+
+        <h2 id="在-@component()-中提供服务" class="docs-header-link">
+          <span header-link="在-@component()-中提供服务"></span>
+          在 @Component() 中提供服务
+        </h2>
+      <p>Angular 中所有的依赖都是单例的，由于存在模块和 Element 注入器层级，导致可以在不同的注入器中提供同一个令牌，从而实现非全局单例的效果，在组件中提供服务达到限制某些依赖只能在当前组件/指令以及子元素中使用，或者不同的组件注入各自的单独实例。</p>
+<p>在组件/指令中可以通过<code>providers</code>与<code>viewProviders</code>分别提供服务依赖项:</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+  providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>provide<span class="token punctuation">:</span> FlowerService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span>emoji<span class="token punctuation">:</span> <span class="token string">'🌺'</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+  viewProviders<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>provide<span class="token punctuation">:</span> AnimalService<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> <span class="token punctuation">{</span>emoji<span class="token punctuation">:</span> <span class="token string">'🐶'</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span></div></code></pre>
+
+        <h2 id="providers-和-viewproviders" class="docs-header-link">
+          <span header-link="providers-和-viewproviders"></span>
+          providers 和 viewProviders
+        </h2>
+      <p>组件或者指令中使用<code>providers</code>和<code>viewProviders</code>的区别可以通过阅读 <a target="_blank" href="https://angular.io/guide/hierarchical-dependency-injection#providing-services-in-component">官方文档 hierarchical-dependency-injection#providing-services-in-component</a> 章节深入理解，官方内容有点多，我尝试做一点简化，其实不理解也没有任何问题，实际工作中很少需要使用<code>viewProviders</code>。</p>
+<p>首先在 Angular 中定义一个如下模板，实际的逻辑结构中会多一个 VIEW 视图的概念：</p>
+<pre class="language-html"><code class="language-html"><div><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-root</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-child</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-child</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span></div></code></pre>
+<pre class="language-html"><code class="language-html"><div><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-root</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-child</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+       ...content goes here...
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-child</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span></div></code></pre>
+<p>如果<code>&lt;app-child&gt;&lt;/app-child&gt;</code>模板内部有一个 A 组件，A 组件注入服务会先从虚拟的 #VIEW 中查找依赖，然后再到 app-child 组件，解析顺序为<code>app-child #VIEW =&gt; app-child =&gt; app-root #View =&gt; app-root</code>，那么  <code>providers</code>提供的服务其实就是挂载在组件上，<code>viewProviders</code>提供的服务挂载在 #VIEW 这个虚拟结构之上。</p>
+<p>正常情况下，<code>providers</code>和<code>viewProviders</code>没有任何区别，只有当在组件中使用投影时会不同的表现，比如下面的示例：</p>
+<pre class="language-html"><code class="language-html"><div><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-root</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-child</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a-component</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a-component</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-child</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span></div></code></pre>
+<div class="dg-paragraph"><code>a-component</code>是通过 ng-content 投影传递到 app-child 组件中的，那么如果在 a-component 中注入  <code>FlowerService</code>，此时如果<code>app-child</code>是通过<code>viewProviders</code>提供的依赖，那么 A 组件会找不到依赖值，有投影时实际逻辑图如下：</div>
+<pre class="language-html"><code class="language-html"><div><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-root</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-child</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+       ...content goes here...
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a-component</span><span class="token punctuation">></span></span>
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a-component</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-child</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span></div></code></pre>
+<p>此时，a-component 和 app-child 的 #VIEW 是平级的，所以往上找不到 &lt;#VIEW&gt; 中提供的依赖项（也就是   <code>viewProviders</code>提供的依赖性）</p>
+<p>解析和查找的逻辑关系如下所示，其实关于<code>viewProviders</code>我们基本上很少使用，所以不理解或者不知道也没有关系，但是通过这个可以深入的理解 Angular 关于视图相关的依赖注入底层逻辑。</p>
+<pre class="language-html"><code class="language-html"><div>&lt;app-root @NgModule(AppModule)
+        @Inject(AnimalService) animal=>"🐳">
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-child</span><span class="token punctuation">></span></span>
+      &lt;#VIEW
+       @Provide(AnimalService="🐶")
+       @Inject(AnimalService=>"🐶")>
+       <span class="token comment" spellcheck="true">&lt;!-- ^^using viewProviders means AnimalService is available in &lt;#VIEW>--></span>
+       <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Emoji from AnimalService: {{animal.emoji}} (🐶)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>app-inspector</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>#VIEW</span><span class="token punctuation">></span></span>
+          <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>Emoji from AnimalService: {{animal.emoji}} (🐳)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+      <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-inspector</span><span class="token punctuation">></span></span>
+     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-child</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>#VIEW</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>app-root</span><span class="token punctuation">></span></span></div></code></pre>
+
+        <h2 id="ng-template-注入器" class="docs-header-link">
+          <span header-link="ng-template-注入器"></span>
+          ng-template 注入器
+        </h2>
+      <p>ng-template 在定义的视图层级上下找注入器，并不是在渲染的视图层级找注入器的。这一点特别容易踩坑，当我们编写高度的灵活的组件时经常会支持模板传递，那么渲染模板的节点注入器模板中不一定能够找到，感兴趣不理解的可以看示例：  <a target="_blank" href="https://stackblitz.com/edit/angular-ivy-9tsdhh">https://stackblitz.com/edit/angular-ivy-9tsdhh</a>  </p>
+
+        <h2 id="providein:-&quot;any&quot;-|-&quot;root&quot;-|-&quot;platform&quot;-|-ngmoduletype" class="docs-header-link">
+          <span header-link="providein:-&quot;any&quot;-|-&quot;root&quot;-|-&quot;platform&quot;-|-ngmoduletype"></span>
+          provideIn: &quot;any&quot; | &quot;root&quot; | &quot;platform&quot; | NgModuleType
+        </h2>
+      <ul>
+<li><code>root</code>: 表示在根模块注入器（root <code>ModuleInjector</code>）提供依赖。</li>
+<li><code>platform</code>: 表示在平台注入器提供依赖。</li>
+<li>指定模块表示在特定的特性模块提供依赖（注意循环依赖）。</li>
+<li><code>any</code>: 所有急性加载的模块都会共享同一个服务单例，惰性加载模块各自有它们自己独有的单例。</li>
+</ul>
+
+        <h2 id="elementinjector-使用场景" class="docs-header-link">
+          <span header-link="elementinjector-使用场景"></span>
+          ElementInjector 使用场景
+        </h2>
+      <ul>
+<li>服务隔离（多个详情页、编辑器）。</li>
+<li>多重编辑会话。</li>
+<li>在当前组件替换使用第三方服务的行为。</li>
+</ul>
+<p>Angular 依赖注入中的<code>Provider</code>、层级注入器、<code>ElementInjector</code>和模块注入器、注入解析规则等这些知识点是密不可分的，当所有的知识点串起来后再回过头来完整按顺序阅读一下依赖注入的前四个章节，会有一种豁然开朗的感觉，因为我们看到的很多 API 和不同的行为，深层的原因还是 Angular 对于依赖注入的底层设计和原理导致的，读到此处如果前面所有的内容你都有了一个很好的理解，那么恭喜你已经进入到 Angular 依赖注入中高级水平，接下来就是把所学的知识灵活运用从而实现软件架构的升级，提高程序的健壮性和可维护性。</p>

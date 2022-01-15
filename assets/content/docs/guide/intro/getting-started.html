@@ -1,0 +1,229 @@
+
+        <h2 id="安装-angular-cli" class="docs-header-link">
+          <span header-link="安装-angular-cli"></span>
+          安装 Angular CLI
+        </h2>
+      <p>强烈推荐大家使用 Angular CLI 来创建项目，初始化生成应用和类库代码，首先需要使用<code>npm</code>命令安装全局 CLI。</p>
+<pre class="language-bash"><code class="language-bash"><div><span class="token function">npm</span> <span class="token function">install</span> -g @angular/cli</div></code></pre>
+
+        <h2 id="创建应用" class="docs-header-link">
+          <span header-link="创建应用"></span>
+          创建应用
+        </h2>
+      <p>执行 CLI 命令<code>ng new</code>创建初始化应用，并输入应用的名称<code>my-app</code></p>
+<pre class="language-bash"><code class="language-bash"><div><span class="token function">ng</span> new my-app</div></code></pre>
+<p>执行上述命令后需要根据提示输入必要的参数，是否需要路由和选择哪种样式格式，推荐使用<code>scss</code>，输入完参数后 CLI 会默认帮助我们安装所需要的<code>npm</code>依赖包，成功安装后结果如下:</p>
+<div class="dg-paragraph"><img src="assets/images/intro/cli-ng-new.png" alt=""></div>
+
+        <h2 id="启动应用" class="docs-header-link">
+          <span header-link="启动应用"></span>
+          启动应用
+        </h2>
+      <p>应用创建后，切换到应用目录<code>my-app</code>下，执行<code>ng serve</code>或者<code>npm run serve</code>命令启动应用。</p>
+<pre class="language-bash"><code class="language-bash"><div><span class="token function">cd</span> my-app
+<span class="token function">ng</span> serve --open</div></code></pre>
+<p>使用<code>--open</code>启动后会自动打开默认浏览器，并访问<code>http://localhost:4200</code>。
+如果一切顺利，你将要看到如下页面:</p>
+<div class="dg-paragraph"><img src="assets/images/intro/ng-serve-default-page.png" alt=""></div>
+
+        <h2 id="stackblitz-创建应用" class="docs-header-link">
+          <span header-link="stackblitz-创建应用"></span>
+          StackBlitz 创建应用
+        </h2>
+      <p>如果你本地没有安装<code>Node.js</code>和<code>npm</code>，想体验一下 Angular 的开发，可以直接通过 StackBlitz 在线创建一个 Angular 应用。</p>
+<div class="dg-paragraph"><img src="assets/images/intro/stackblitz-new.png" alt=""></div>
+<p>创建后展示的效果如下，StackBlitz 创建的应用默认不带路由，使用 css 而没有使用 scss，和 CLI 初始化的应用不完全一样。</p>
+<div class="dg-paragraph"><img src="assets/images/intro/stackblitz-serve-default-page.png" alt=""></div>
+
+        <h2 id="angular-应用目录介绍" class="docs-header-link">
+          <span header-link="angular-应用目录介绍"></span>
+          Angular 应用目录介绍
+        </h2>
+      <p>一个完整的 Angular 应用大致的目录结构如下所示:</p>
+<pre class="language-bash"><code class="language-bash"><div><span class="token keyword">.</span>
+├── README.md
+├── angular.json
+├── karma.conf.js
+├── package-lock.json
+├── package.json
+├── src
+│   ├── app
+│   │   ├── app-routing.module.ts
+│   │   ├── app.component.html
+│   │   ├── app.component.scss
+│   │   ├── app.component.spec.ts
+│   │   ├── app.component.ts
+│   │   └── app.module.ts
+│   ├── assets
+│   ├── environments
+│   │   ├── environment.prod.ts
+│   │   └── environment.ts
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── main.ts
+│   ├── polyfills.ts
+│   ├── styles.scss
+│   └── test.ts
+├── tsconfig.app.json
+├── tsconfig.json
+└── tsconfig.spec.json</div></code></pre>
+<p>以下针对核心的文件/文件夹做了一下简单的介绍:</p>
+<table>
+<thead>
+<tr>
+<th>文件/文件夹</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>angular.json</code></td>
+<td>这个是 Angular 应用工作区的配置文件，一个工作区可以有多个应用或者类库，每个应用如何构建、本地开发的端口等等配置都在此文件中。</td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td>默认应用的源代码，包含<code>app</code>应用代码、<code>assets</code>资源文件、入口 HTML 文件和 TS 等。</td>
+</tr>
+<tr>
+<td><code>src/main.ts</code></td>
+<td>入口 TS 文件，主要包含 Angular 应用的启动。</td>
+</tr>
+<tr>
+<td><code>src/index.html</code></td>
+<td>单页应用的入口 HTML 文件，包含 HTML 的 head 和 body，body 中会使用启动组件<code>&lt;app-root&gt;&lt;/app-root&gt;</code>。</td>
+</tr>
+<tr>
+<td><code>src/assets</code></td>
+<td>资源文件，包含图片、字体等，Angular 本地启动后通过<code>assets/**</code> URL 访问资源文件。</td>
+</tr>
+<tr>
+<td><code>src/app/app.module.ts</code></td>
+<td>每个 Angular 应用都需要一个启动模块<code>AppModule</code>，而且只能有一个。</td>
+</tr>
+<tr>
+<td><code>src/app/app.component.ts</code></td>
+<td>启动模块配置的启动组件，此组件的 selector 默认是<code>app-root</code>，需要和<code>index.html</code>中的元素对应，Angular 应用启动会渲染此组件，并动态替换 index.html 中的入口元素。</td>
+</tr>
+<tr>
+<td><code>src/app/app-routing.module.ts</code></td>
+<td>Angular 应用的路由模块，配置路由以及导入官方的 <code>@angular/router</code>。</td>
+</tr>
+<tr>
+<td><code>src/environments</code></td>
+<td>环境变量，针对开发环境和生产环境使用不同的配置使用，构建时会动态根据环境替换。</td>
+</tr>
+<tr>
+<td><code>src/polyfills.ts</code></td>
+<td>浏览器所需要的填充库，默认包含 <code>zone.js</code>。</td>
+</tr>
+<tr>
+<td><code>src/styles.scss</code></td>
+<td>样式入口文件。</td>
+</tr>
+<tr>
+<td><code>tsconfig.json</code></td>
+<td>TypeScript 的配置文件，此文件只包含基本配置。</td>
+</tr>
+<tr>
+<td><code>tsconfig.app.json</code></td>
+<td>Angular 默认应用的 TypeScript 配置文件，继承<code>tsconfig.json</code>文件。</td>
+</tr>
+<tr>
+<td><code>tsconfig.spec.json</code></td>
+<td>Angular 默认应用的测试 TypeScript 配置文件，继承<code>tsconfig.json</code>文件。</td>
+</tr>
+<tr>
+<td><code>karma.conf.js</code></td>
+<td>默认应用测试的 Karma 配置。</td>
+</tr>
+</tbody></table>
+
+        <h2 id="数据渲染" class="docs-header-link">
+          <span header-link="数据渲染"></span>
+          数据渲染
+        </h2>
+      <p>我们可以先把<code>app.component.html</code>的内容清空，使用简洁的模板语法将数据渲染到 DOM 中，修改代码如下:</p>
+<pre class="language-html"><code class="language-html"><div>// app.component.html
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">></span></span>{{ message }}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// app.component.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Component<span class="token punctuation">,</span> VERSION <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span>  <span class="token punctuation">{</span>
+  message <span class="token operator">=</span> <span class="token string">'Hello Angular!'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><example-hello></example-hello></div>
+
+        <h2 id="循环渲染列表" class="docs-header-link">
+          <span header-link="循环渲染列表"></span>
+          循环渲染列表
+        </h2>
+      <p>Angular 提供了丰富的指令，比如<code>*ngFor</code>实现循环渲染一个列表：</p>
+<pre class="language-html"><code class="language-html"><div>// app.component.html
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ol</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">*ngFor</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>let item of items<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    {{ item.title }}
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ol</span><span class="token punctuation">></span></span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// app.component.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Component<span class="token punctuation">,</span> VERSION <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span>  <span class="token punctuation">{</span>
+  items <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            id<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+            title<span class="token punctuation">:</span> <span class="token string">'Angular 怎么不火呢?'</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            id<span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+            title<span class="token punctuation">:</span> <span class="token string">'Angular 太牛逼了!'</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+            id<span class="token punctuation">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+            title<span class="token punctuation">:</span> <span class="token string">'优秀的前端工程师和框架无关，但是 Angular 会让你更快的成为优秀前端工程师!'</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><alert>注意<code>*ngFor</code>结构性指令在<code>CommonModule</code>中提供，需要在<code>AppModule</code>中引入<code>@angular/common</code>方可使用，代码如下。</alert></div>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">import</span> <span class="token punctuation">{</span> NgModule <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> BrowserModule <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/platform-browser'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> CommonModule <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/common'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> AppComponent <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./app.component'</span><span class="token punctuation">;</span>
+
+@<span class="token function">NgModule</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  imports<span class="token punctuation">:</span>      <span class="token punctuation">[</span> BrowserModule<span class="token punctuation">,</span> CommonModule <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  declarations<span class="token punctuation">:</span> <span class="token punctuation">[</span> AppComponent <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  bootstrap<span class="token punctuation">:</span>    <span class="token punctuation">[</span> AppComponent <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppModule</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><example-for></example-for></div>
+
+        <h2 id="条件判断" class="docs-header-link">
+          <span header-link="条件判断"></span>
+          条件判断
+        </h2>
+      <p>控制切换一个元素是否显示，通过<code>*ngIf</code>指令实现属性的判断即可。</p>
+<pre class="language-html"><code class="language-html"><div>// app.component.html
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">*ngIf</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>found<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>我是一只🐱，你怎么这么快就找到我了。<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">(click)</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>findCat()<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>开始找猫猫<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// app.component.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Component<span class="token punctuation">,</span> VERSION <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  selector<span class="token punctuation">:</span> <span class="token string">'app-root'</span><span class="token punctuation">,</span>
+  templateUrl<span class="token punctuation">:</span> <span class="token string">'./app.component.html'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">AppComponent</span>  <span class="token punctuation">{</span>
+  found <span class="token operator">=</span> <span class="token keyword">false</span><span class="token punctuation">;</span>
+
+  <span class="token function">findCat</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">this</span><span class="token punctuation">.</span>found <span class="token operator">=</span> <span class="token keyword">true</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><example-if></example-if></div>

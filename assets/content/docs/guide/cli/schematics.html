@@ -1,0 +1,378 @@
+<p>关于 Angular 原理图的介绍和如何使用可以直接看官方文档：<a target="_blank" href="https://angular.cn/guide/schematics">https://angular.cn/guide/schematics</a></p>
+<p>本文是 GitHub 仓储 <a target="_blank" href="https://github.com/angular/angular-cli/tree/master/packages/angular_devkit/schematics">angular_devkit/schematics</a> 的中文翻译。</p>
+
+        <h1 id="原理图" class="docs-header-link">
+          <span header-link="原理图"></span>
+          原理图
+        </h1>
+      <blockquote>
+<p>现代 Web 的一个脚手架库。</p>
+</blockquote>
+
+        <h2 id="描述" class="docs-header-link">
+          <span header-link="描述"></span>
+          描述
+        </h2>
+      <p>原理图是转换现有文件系统的生成器。它可以创建文件、重构现有文件或移动文件。</p>
+<p>原理图与其他生成器（如 Yeoman 或 Yarn Create）的区别在于，原理图纯粹是描述性的；原理图是没有副作用的，在所有内容都提交之前，不会对实际的文件系统应用任何更改。根据设计，原理图中没有副作用。</p>
+
+        <h1 id="词汇表" class="docs-header-link">
+          <span header-link="词汇表"></span>
+          词汇表
+        </h1>
+      <table>
+<thead>
+<tr>
+<th>术语</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Schematics</strong></td>
+<td>在现有文件系统上执行描述性代码而不产生副作用的生成器。</td>
+</tr>
+<tr>
+<td><strong>Collection</strong></td>
+<td>原理图元数据列表。原理图可以在集合中按名称引用。</td>
+</tr>
+<tr>
+<td><strong>Tool</strong></td>
+<td>使用原理图库的代码。</td>
+</tr>
+<tr>
+<td><strong>Tree</strong></td>
+<td>用于更改的暂存区域，包含原始文件系统和要应用于该系统的更改列表。</td>
+</tr>
+<tr>
+<td><strong>Rule</strong></td>
+<td>将 Action 应用于<code>Tree</code>的函数。它返回一个新的<code>Tree</code>，其中包含所有转换。</td>
+</tr>
+<tr>
+<td><strong>Source</strong></td>
+<td>从空文件系统创建一个全新的<code>Tree</code>的函数。例如: 文件源可以从磁盘读取文件，并为每个文件创建 Create Action。</td>
+</tr>
+<tr>
+<td><strong>Action</strong></td>
+<td>需要验证并提交到文件系统或<code>Tree</code>的原子操作。Action 由原理图创建。</td>
+</tr>
+<tr>
+<td><strong>Sink</strong></td>
+<td>所有<code>Action</code>的最终结果。</td>
+</tr>
+</tbody></table>
+
+        <h1 id="工具" class="docs-header-link">
+          <span header-link="工具"></span>
+          工具
+        </h1>
+      <p>原理图是一个类库，它本身不执行，<a target="_blank" href="https://github.com/angular/angular-cli/blob/master/packages/angular_devkit/schematics_cli/bin/schematics.ts">reference CLI</a> 在这个仓储中可用，并且发布到 NPM <a target="_blank" href="https://www.npmjs.com/package/@angular-devkit/schematics-cli">@angular-devkit/schematics-cli</a>。此档解释了库的用法和工具API，但不涉及工具实现本身。</p>
+<p>工具负责以下任务：</p>
+<ol>
+<li>创建 Schematic Engine，并传入一个集合和原理图加载器。</li>
+<li>理解并遵循原理图元数据和集合之间的依赖关系。原理图可以引用依赖项，工具有责任遵循这些依赖项。reference CLI 使用 NPM 包的形式对集合起作用。</li>
+<li>创建 Options 对象。Options 可以是任何东西，但是 Schematics 可以指定一个遵守格式的 JSON Schema。例如: reference CLI 将参数解析为 JSON 对象，并使用 Schema 指定的格式对其进行验证。</li>
+<li>Schematics 提供了一些 JSON Schema 格式，用于工具添加时的验证。可以验证paths、html selectors和 app names。请参考 CLI 了解如何添加这些内容。</li>
+<li>调用 Schematics 时会带上原始的 Tree。原始的 Tree 表示文件系统的初始状态。reference CLI 在当前牡目录使用原始 Tree。</li>
+<li>创建一个接收器(Sink)并将原理图的结果提交给接收器(Sink)。类库提供了许多接收器，例如<code>FileSystemSink</code>和<code>DryRunSink</code>。</li>
+<li>通过类库输出传播的所有日志，包括调试信息。</li>
+</ol>
+<p>工具API由以下部分组成：</p>
+
+        <h2 id="引擎(engine)" class="docs-header-link">
+          <span header-link="引擎(engine)"></span>
+          引擎(Engine)
+        </h2>
+      <div class="dg-paragraph"><code>SchematicEngine</code>负责加载和构造<code>Collection</code>和<code>Schematics</code>。在创建引擎时，该工具提供一个<code>EngineHost</code>接口，<code>EngineHost</code>表示如何通过一个集合名称创建<code>CollectionDescription</code>，以及如何创建<code>SchematicDescription</code></div>
+
+        <h1 id="原理图-schematics-(generators)" class="docs-header-link">
+          <span header-link="原理图-schematics-(generators)"></span>
+          原理图 Schematics (Generators)
+        </h1>
+      <p>原理图是生成器，并且是 <code>Collection</code> 的一部分。</p>
+
+        <h2 id="集合-(collection)" class="docs-header-link">
+          <span header-link="集合-(collection)"></span>
+          集合 (Collection)
+        </h2>
+      <p>集合通过一个<code>collection.json</code>文件定义的（在 reference CLI 中）。JSON 定义有如下属性：</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>name</strong></td>
+<td><code>string</code></td>
+<td>集合的名称.</td>
+</tr>
+<tr>
+<td><strong>version</strong></td>
+<td><code>string</code></td>
+<td>无用的字段，表示版本.</td>
+</tr>
+</tbody></table>
+
+        <h2 id="原理图-(schematic)" class="docs-header-link">
+          <span header-link="原理图-(schematic)"></span>
+          原理图 (Schematic)
+        </h2>
+      
+        <h1 id="操作符(operators),-源(sources)-和规则(rules)" class="docs-header-link">
+          <span header-link="操作符(operators),-源(sources)-和规则(rules)"></span>
+          操作符(Operators), 源(Sources) 和规则(Rules)
+        </h1>
+      <div class="dg-paragraph"><code>Source</code> 是一个<code>Tree</code>的生成器；它创建一个新的入口 Root Tree，<code>Rule</code>是从<code>Tree</code>到另一颗<code>Tree</code>的转换。<code>Schematic</code>（在根目录下）是通常应用于文件系统的<code>Rule</code>。</div>
+
+        <h2 id="operators" class="docs-header-link">
+          <span header-link="operators"></span>
+          Operators
+        </h2>
+      <div class="dg-paragraph"><code>FileOperator</code>将更改单个<code>FileEntry</code>并返回新的<code>FileEntry</code>, 结果遵循以下规则：</div>
+<ol>
+<li>如果返回的<code>FileEntry</code>为空，则<code>DeleteAction</code>将添加到操作列表中。</li>
+<li>如果路径已更改，则<code>RenameAction</code>将添加到 Action 列表中。</li>
+<li>如果内容发生更改，将在操作列表中添加<code>OverwriteAction</code>。</li>
+</ol>
+<p>使用<code>FileOperator</code>创建文件是不可能的。</p>
+
+        <h2 id="内置操作符(operators)" class="docs-header-link">
+          <span header-link="内置操作符(operators)"></span>
+          内置操作符(Operators)
+        </h2>
+      <p>原理图库默认提供了多个涵盖基本场景的<code>Operator</code>工厂：</p>
+<table>
+<thead>
+<tr>
+<th>FileOperator</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>contentTemplate&lt;T&gt;(options: T)</code></td>
+<td>应用内容模板（请参见模板章节）</td>
+</tr>
+<tr>
+<td><code>pathTemplate&lt;T&gt;(options: T)</code></td>
+<td>应用路径模板 (请参见模板章节)</td>
+</tr>
+</tbody></table>
+
+        <h2 id="内置源(sources)" class="docs-header-link">
+          <span header-link="内置源(sources)"></span>
+          内置源(Sources)
+        </h2>
+      <p>原理图库默认还提供多个<code>Source</code>工厂：</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>empty()</code></td>
+<td>创建一个源并返回一个空 <code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>source(tree: Tree)</code></td>
+<td>创建一个源并返回一个通过参数传的<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>url(url: string)</code></td>
+<td>从给定的URL加载文件列表，并返回一个文件<code>Tree</code>，这些<code>Tree</code>通过<code>CreateAction</code>应用于一个空的<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>apply(source: Source, rules: Rule[])</code></td>
+<td>对一个<code>Source</code>进行一系列 <code>Rule</code> 操作，返回一个新的<code>Source</code>。</td>
+</tr>
+</tbody></table>
+
+        <h2 id="内置规则(rules)" class="docs-header-link">
+          <span header-link="内置规则(rules)"></span>
+          内置规则(Rules)
+        </h2>
+      <p>原理图库默认还提供多个<code>Rule</code>工厂：</p>
+<table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>noop()</code></td>
+<td>按原样返回输入的 <code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>chain(rules: Rule[])</code></td>
+<td>返回一个串联多个<code>Rule</code>的一个新 <code>Rule</code>。</td>
+</tr>
+<tr>
+<td><code>forEach(op: FileOperator)</code></td>
+<td>将运算符应用于输入<code>Tree</code>的每个文件，并返回<code>Rule</code>。</td>
+</tr>
+<tr>
+<td><code>move(root: string)</code></td>
+<td>将所有文件从输入移动到子目录。</td>
+</tr>
+<tr>
+<td><code>merge(other: Tree)</code></td>
+<td>将输入的<code>Tree</code>合并到另一个<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>contentTemplate&lt;T&gt;(options: T)</code></td>
+<td>将内容模板（请参阅模板部分）应用于整个<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>pathTemplate&lt;T&gt;(options: T)</code></td>
+<td>将路径模板（请参见模板部分）应用于整个<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>template&lt;T&gt;(options: T)</code></td>
+<td>将路径模板和内容模板（请参见模板部分）应用于整个<code>Tree</code>。</td>
+</tr>
+<tr>
+<td><code>filter(predicate: FilePredicate&lt;boolean&gt;)</code></td>
+<td>返回输入<code>Tree</code>，其中包含不传递<code>FilePredicate</code>的文件。</td>
+</tr>
+</tbody></table>
+
+        <h1 id="templating" class="docs-header-link">
+          <span header-link="templating"></span>
+          Templating
+        </h1>
+      <p>As referenced above, some functions are based upon a file templating system, which consists of path and content templating.</p>
+<p>The system operates on placeholders defined inside files or their paths as loaded in the <code>Tree</code> and fills these in as defined in the following, using values passed into the <code>Rule</code> which applies the templating (i.e. <code>template&lt;T&gt;(options: T)</code>).</p>
+
+        <h2 id="path-templating" class="docs-header-link">
+          <span header-link="path-templating"></span>
+          Path Templating
+        </h2>
+      <table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>variable</strong></td>
+<td>Replaced with the value of <code>variable</code>.</td>
+</tr>
+<tr>
+<td><strong>variable@function</strong></td>
+<td>Replaced with the result of the call <code>function(variable)</code>. Can be chained to the left (<code>__variable@function1@function2__ </code> etc).</td>
+</tr>
+</tbody></table>
+
+        <h2 id="content-templating" class="docs-header-link">
+          <span header-link="content-templating"></span>
+          Content Templating
+        </h2>
+      <table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&lt;%= expression %&gt;</td>
+<td>Replaced with the result of the call of the given expression. This only supports direct expressions, no structural (for/if/...) JavaScript.</td>
+</tr>
+<tr>
+<td>&lt;%- expression %&gt;</td>
+<td>Same as above, but the value of the result will be escaped for HTML when inserted (i.e. replacing &#39;&lt;&#39; with &#39;&lt;&#39;)</td>
+</tr>
+<tr>
+<td>&lt;% inline code %&gt;</td>
+<td>Inserts the given code into the template structure, allowing to insert structural JavaScript.</td>
+</tr>
+<tr>
+<td>&lt;%# text %&gt;</td>
+<td>A comment, which gets entirely dropped.</td>
+</tr>
+</tbody></table>
+
+        <h1 id="examples" class="docs-header-link">
+          <span header-link="examples"></span>
+          Examples
+        </h1>
+      
+        <h2 id="simple" class="docs-header-link">
+          <span header-link="simple"></span>
+          Simple
+        </h2>
+      <p>An example of a simple Schematics which creates a &quot;hello world&quot; file, using an option to determine its path:</p>
+<pre class="language-typescript"><code class="language-typescript"><div><span class="token keyword">import</span> <span class="token punctuation">{</span>Tree<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular-devkit/schematics'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">MySchematic</span><span class="token punctuation">(</span>options<span class="token punctuation">:</span> <span class="token keyword">any</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>tree<span class="token punctuation">:</span> Tree<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    tree<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>options<span class="token punctuation">.</span>path <span class="token operator">+</span> <span class="token string">'/hi'</span><span class="token punctuation">,</span> <span class="token string">'Hello world!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> tree<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>A few things from this example:</p>
+<ol>
+<li>The function receives the list of options from the tooling.</li>
+<li>It returns a <a href="src/engine/interface.ts#L73"><code>Rule</code></a>, which is a transformation from a <code>Tree</code> to another <code>Tree</code>.</li>
+</ol>
+
+        <h2 id="templating" class="docs-header-link">
+          <span header-link="templating"></span>
+          Templating
+        </h2>
+      <p>A simplified example of a Schematics which creates a file containing a new Class, using an option to determine its name:</p>
+<pre class="language-typescript"><code class="language-typescript"><div><span class="token comment" spellcheck="true">// files/__name@dasherize__.ts</span>
+
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token operator">&lt;</span><span class="token operator">%</span><span class="token operator">=</span> <span class="token function">classify</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span> <span class="token operator">%</span><span class="token operator">></span> <span class="token punctuation">{</span>
+<span class="token punctuation">}</span></div></code></pre>
+<pre class="language-typescript"><code class="language-typescript"><div><span class="token comment" spellcheck="true">// index.ts</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> strings <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular-devkit/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span>
+  Rule<span class="token punctuation">,</span> SchematicContext<span class="token punctuation">,</span> SchematicsException<span class="token punctuation">,</span> Tree<span class="token punctuation">,</span>
+  apply<span class="token punctuation">,</span> branchAndMerge<span class="token punctuation">,</span> mergeWith<span class="token punctuation">,</span> template<span class="token punctuation">,</span> url<span class="token punctuation">,</span>
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular-devkit/schematics'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Schema as ClassOptions <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./schema'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>options<span class="token punctuation">:</span> ClassOptions<span class="token punctuation">)</span><span class="token punctuation">:</span> Rule <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>tree<span class="token punctuation">:</span> Tree<span class="token punctuation">,</span> context<span class="token punctuation">:</span> SchematicContext<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>options<span class="token punctuation">.</span>name<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">SchematicsException</span><span class="token punctuation">(</span><span class="token string">'Option (name) is required.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">const</span> templateSource <span class="token operator">=</span> <span class="token function">apply</span><span class="token punctuation">(</span>
+      <span class="token function">url</span><span class="token punctuation">(</span><span class="token string">'./files'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">[</span>
+        <span class="token function">template</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+          <span class="token operator">...</span>strings<span class="token punctuation">,</span>
+          <span class="token operator">...</span>options<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token function">branchAndMerge</span><span class="token punctuation">(</span><span class="token function">mergeWith</span><span class="token punctuation">(</span>templateSource<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>Additional things from this example:</p>
+<ol>
+<li><code>strings</code> provides the used <code>dasherize</code> and <code>classify</code> functions, among others.</li>
+<li>The files are on-disk in the same root directory as the <code>index.ts</code> and loaded into a <code>Tree</code>.</li>
+<li>Then the <code>template</code> <code>Rule</code> fills in the specified templating placeholders. For this, it only knows about the variables and functions passed to it via the options-object.</li>
+<li>Finally, the resulting <code>Tree</code>, containing the new file, is merged with the existing files of the project which the Schematic is run on.</li>
+</ol>
+
+        <h1 id="future-work" class="docs-header-link">
+          <span header-link="future-work"></span>
+          Future Work
+        </h1>
+      <p>Schematics is not done yet. Here&#39;s a list of things we are considering:</p>
+<ul>
+<li>Smart defaults for Options. Having a JavaScript function for default values based on other default values.</li>
+<li>Prompt for input options. This should only be prompted for the original schematics, dependencies to other schematics should not trigger another prompting.</li>
+<li>Tasks for running tooling-specific jobs before and after a schematics has been scaffolded. Such tasks can involve initialize git, or npm install. A specific list of tasks should be provided by the tool, with unsupported tasks generating an error.</li>
+</ul>
