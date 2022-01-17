@@ -1,0 +1,341 @@
+<p>Observables 是多个值延迟推送的集合，它们将填补下表中缺失的位置：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>SINGLE 单值</th>
+<th>MULTIPLE 多值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Pull - 拉</strong></td>
+<td><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Glossary/Function">Function</a></td>
+<td><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols">Iterator</a></td>
+</tr>
+<tr>
+<td><strong>Push - 推</strong></td>
+<td><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/Promise.jsm/Promise">Promise</a></td>
+<td><a target="_blank" href="https://rxjs-dev.firebaseapp.com/class/es6/Observable.js~Observable.html">Observable</a></td>
+</tr>
+</tbody></table>
+<div class="dg-paragraph"><strong>示例</strong>：下面是一个 Observable，它在订阅时立即（同步）推送值 <code>1</code>、<code>2</code>、<code>3</code>，并且值 <code>4 </code>在订阅调用之后一秒后发出并完成：</div>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>subscriber <span class="token operator">=</span><span class="token operator">></span> {
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    subscriber<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>要调用 Observable 并查看这些值，我们需要订阅它：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>subscriber <span class="token operator">=</span><span class="token operator">></span> {
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    subscriber<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just before subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>{
+  <span class="token function">next</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> { console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'got value '</span> <span class="token operator">+</span> x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">; },</span>
+  <span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> { console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'something wrong occurred: '</span> <span class="token operator">+</span> err<span class="token punctuation">)</span><span class="token comment" spellcheck="true">; },</span>
+  <span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span> { console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'done'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; }</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just after subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>在控制台的执行结果：</p>
+<pre><code><div>just before subscribe
+got value <span class="token number">1</span>
+got value <span class="token number">2</span>
+got value <span class="token number">3</span>
+just after subscribe
+got value <span class="token number">4</span>
+done</div></code></pre>
+        <h2 id="pull-和-push" class="docs-header-link">
+          <span header-link="pull-和-push"></span>
+          Pull 和 Push
+        </h2>
+      <div class="dg-paragraph"><em>Pull</em> 和 <em>Push</em> 是描述数据生产者如何与数据消费者通信的两种不同的协议。</div>
+<div class="dg-paragraph"><strong>什么是 Pull ？</strong>在拉式系统中，消费者决定何时从数据生产者接收数据，生产者自己并不知道数据何时将被交付给消费者。</div>
+<p>每个 JavaScript 函数都是一个拉式系统，函数是数据的生产者，调用函数的代码通过从调用中“拉出”一个返回值来消耗数据。</p>
+<p>ES2015 引入了<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*">生成器函数和迭代器</a>（<code>function*</code>），这是另一种拉式系统，调用代码 <code>iterator.next()</code> 是消费者，从迭代器（生产者）中“拉出”多个值。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>PRODUCER 生产者</th>
+<th>CONSUMER 消费者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Pull - 拉</strong></td>
+<td><strong>被动：</strong>在请求时生成数据</td>
+<td><strong>主动：</strong>决定何时请求数据</td>
+</tr>
+<tr>
+<td><strong>Push - 推</strong></td>
+<td><strong>主动：</strong>以自己的速度生成数据</td>
+<td><strong>被动：</strong>对接收到的数据作出反应</td>
+</tr>
+</tbody></table>
+<div class="dg-paragraph"><strong>什么是 Push？</strong>在推送系统中，生产者决定何时向消费者发送数据，消费者不知道何时会收到这些数据。</div>
+<p>Promises 是当今 JavaScript 中最常见的推送系统类型，Promise（生产者）向已注册的回调（消费者）传递已解析的值，但与函数不同的是，Promise 负责精确地确定何时将该值“推送”到回调。</p>
+<p>RxJS 引入了 Observables，一个新的 JavaScript 推送系统，可观察对象是多个值的生产者，将它们“推”给观察者（消费者）。</p>
+<ul>
+<li>一个 <strong>Function</strong> 是一个延迟的计算过程，它在调用时同步地返回单个值。</li>
+<li>一个 <strong>Generator</strong> 是一个延迟的计算，它在迭代时同步返回零到（可能）无穷多个值。</li>
+<li>一个 <strong>Promise</strong> 是一种可能（或不可能）最终返回单个值的计算。</li>
+<li>一个 <strong>Observable</strong> 是一个延迟的计算，它可以从被调用的时间起同步或异步地返回零到（可能）无穷多个值。</li>
+</ul>
+
+        <h2 id="observables-概括为函数" class="docs-header-link">
+          <span header-link="observables-概括为函数"></span>
+          Observables 概括为函数
+        </h2>
+      <p>与流行的说法相反，Observables 既不像事件发送者，也不像多个值的 Promise，在某些情况下，Observables 可能会像 EventEmitters 一样工作，即当它们使用 RxJS Subjects 进行多播时，但通常它们不会像 EventEmitters 那样工作。</p>
+<blockquote>
+<p>Observables 类似于没有参数的函数，但将其泛化为允许多个值。</p>
+</blockquote>
+<p>考虑以下代码：</p>
+<pre><code><div>function <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  return <span class="token number">42</span><span class="token comment" spellcheck="true">;</span>
+}
+
+<span class="token keyword">const</span> x <span class="token operator">=</span> foo<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // same as foo()</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> y <span class="token operator">=</span> foo<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // same as foo()</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>我们期望在控制台看到：</p>
+<pre><code><div><span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span></div></code></pre><p>您可以在上面写下相同的行为，但是使用 Observables：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> foo <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>subscriber <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">42</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+foo<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+foo<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>y <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>控制台输出是相同的</p>
+<pre><code><div><span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span></div></code></pre><p>因为函数和 Observables 都是惰性计算，如果不调用函数，<code>console.log(&#39;Hello&#39;)</code> 将不会发生，对于 Observables，如果不“调用”它（使用 <code>subscribe</code>），则 <code>console.log(&#39;Hello&#39;)</code> 也不会发生的。另外，“调用”或“订阅”是一个独立的操作：两个函数调用会触发两个独立的副作用，两个 Observable 的订阅也会触发两个独立的副作用。与 EventEmitters 不同的是，不管订阅者是否存在，EventEmitters 都会共享副作用并开始执行，而 Observables 没有共享的执行，并且是惰性的。</p>
+<blockquote>
+<p>订阅 Observable 类似于调用函数。</p>
+</blockquote>
+<p>有些人声称 Observables 是异步的，这是不正确的，如果用日志包裹函数调用，如下所示：</p>
+<pre><code><div>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'before'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>foo<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>输出如下：</p>
+<pre><code><div><span class="token string">"before"</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token string">"after"</span></div></code></pre><p>这与 Observables 的行为是一样的：</p>
+<pre><code><div>console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'before'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+foo<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>输出如下：</p>
+<pre><code><div><span class="token string">"before"</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token string">"after"</span></div></code></pre><p>这证明了 <code>foo</code> 的订阅是完全同步的，就像函数一样。</p>
+<blockquote>
+<p>Observables 能够同步或异步地传递值。</p>
+</blockquote>
+<p>Observables 和函数的区别是什么？<strong>随着时间的推移，Observables 可以“返回”多个值，</strong>而函数则不能，你不能这样做：</p>
+<pre><code><div>function <span class="token function">foo</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  return <span class="token number">42</span><span class="token comment" spellcheck="true">;</span>
+  return <span class="token number">100</span><span class="token comment" spellcheck="true">; // dead code. will never happen</span>
+}</div></code></pre><p>函数只能返回一个值，然而，Observables 可以做到：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> foo <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>subscriber <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">42</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // "return" another value</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // "return" yet another</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'before'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+foo<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>同步输出如下：</p>
+<pre><code><div><span class="token string">"before"</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token number">100</span>
+<span class="token number">200</span>
+<span class="token string">"after"</span></div></code></pre><p>但也可以异步“返回”值：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> foo <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>subscriber <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Hello'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">42</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">200</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // happens asynchronously</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'before'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+foo<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> {
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'after'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>输出如下：</p>
+<pre><code><div><span class="token string">"before"</span>
+<span class="token string">"Hello"</span>
+<span class="token number">42</span>
+<span class="token number">100</span>
+<span class="token number">200</span>
+<span class="token string">"after"</span>
+<span class="token number">300</span></div></code></pre><p>结论：</p>
+<ul>
+<li><code>func.call()</code> 表示<em>“同步给我一个值”</em></li>
+<li><code>observable.subscribe()</code> 的意思是<em>“给我任何数量的值，无论是同步的还是异步的”</em></li>
+</ul>
+
+        <h2 id="一个-observable-的解剖" class="docs-header-link">
+          <span header-link="一个-observable-的解剖"></span>
+          一个 Observable 的解剖
+        </h2>
+      <p>使用 <code>new Observable</code> 或创建操作符<strong>创建</strong>一个 Observable，使用 <code>Observer</code> <strong>订阅</strong>，<strong>执行</strong>向 Observer 发送 <code>next</code>/<code>error</code>/<code>complete</code> 通知，并且它们的执行可以被<strong>释放</strong>，这四方面都是在一个 <code>Observable</code> 实例中编码的，但是其中一些方面与其他类型相关，比如观察者和订阅。</p>
+<p>核心 Observable 问题：</p>
+<ul>
+<li><strong>创建</strong> Observables</li>
+<li><strong>订阅</strong> Observable</li>
+<li><strong>执行</strong> Observables</li>
+<li><strong>释放</strong> Observables 执行</li>
+</ul>
+
+        <h3 id="创建-observables" class="docs-header-link">
+          <span header-link="创建-observables"></span>
+          创建 Observables
+        </h3>
+      <div class="dg-paragraph"><code>Observable</code> 构造函数接受一个参数：<code>subscribe</code> 函数。</div>
+<p>下面的示例创建一个 Observable，以便每秒向订阅者发送字符串<code>“hi”</code>。</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  <span class="token keyword">const</span> id <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token string">'hi'</span><span class="token punctuation">)</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><blockquote>
+<p>可以用 new Observable 创建 Observable，但是通常 Observables 是使用创建函数创建的，比如 of、from、interval 等。</p>
+</blockquote>
+<p>在上面的例子中，<code>subscribe</code> 函数是描述 Observable 的最重要部分，让我们看看订阅意味着什么。</p>
+
+        <h3 id="订阅-observables" class="docs-header-link">
+          <span header-link="订阅-observables"></span>
+          订阅 Observables
+        </h3>
+      <p>Observable 对象 <code>observable</code> 在示例中是可以被订阅的，如下：</p>
+<pre><code><div>observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><div class="dg-paragraph"><code>observable.subscribe</code> 和 <code>new Observable(function subscribe(subscriber) {...})</code> 中的 <code>subscribe</code> 名称一样并不是巧合，在库中，它们是不同的，但为了方便理解，你可以在概念上认为它们是相等的。</div>
+<p>这展示了如何订阅调用与同一个 Observable 的多个观察者之间不共享的，当调用 <code>observable.subscribe</code> 传递一个订阅者，<code>Observable(function subscribe(subscriber) {...})</code> 中的函数 <code>subscribe</code> 将针对给定的订阅者运行。每次调用 <code>observable.subscribe</code> 触发它自己的独立设置给订阅者。</p>
+<blockquote>
+<p>订阅 Observable 类似于调用函数，提供数据将被传递到的回调。</p>
+</blockquote>
+<p>这与事件处理 APIs（如 <code>addEventListener</code>/<code>removeEventListener</code>）截然不同，<code>observable.subscribe</code>，则给定的观察者没有被注册为 Observable 的侦听器，Observable 甚至不维护附加观察者的列表。</p>
+<p>订阅调用只是一种启动“可观察执行”并将值或事件传递给该执行的观察者的方法。</p>
+
+        <h3 id="执行-observables" class="docs-header-link">
+          <span header-link="执行-observables"></span>
+          执行 Observables
+        </h3>
+      <div class="dg-paragraph"><code>new Observable(function subscribe(subscriber) {...})</code> 的代码内部表示一个“可观察的执行”（Observable execution），这是一种只对订阅的每个观察者进行的延迟计算，随着时间的推移，执行会产生多个值，可以是同步的，也可以是异步的。</div>
+<p>可观察的执行可以提供三种类型的值：</p>
+<ul>
+<li>“Next”通知：发送一个值，如数字、字符串、对象等。</li>
+<li>“Error”通知：发送 JavaScript 错误或异常。</li>
+<li>“Complete”通知：不会发送值，已经完成。</li>
+</ul>
+<p>“Next”通知是最重要和最常见的类型：它们表示正在传递给订阅者的实际数据。“Error”和“Complete”通知在 Observable 的执行过程中可能只发生一次，并且只能有其中之一。</p>
+<p>这些约束最好用所谓的“Observable 语法”或“契约”来表达，这是一个正则表达式：</p>
+<pre><code><div><span class="token keyword">next</span><span class="token operator">*</span><span class="token punctuation">(</span>error|complete<span class="token punctuation">)</span><span class="token operator">?</span></div></code></pre><blockquote>
+<p>在一个 Observable 的执行中，Next 通知可以传递零到无限个通知，如果传递了一个错误或完成的通知，那么之后就不能再传递其他通知了。</p>
+</blockquote>
+<p>下面是一个 Observable 执行的示例，它传递三个 Next 通知，然后完成：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>Observables 严格遵守 Observable 契约，因此以下代码不会发送 Next 通知 <code>4</code>：</p>
+<pre><code><div>import { Observable } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // Is not delivered because it would violate the contract</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>最好用 <code>try</code>/<code>catch</code> 块将任何代码包装在 <code>subscribe</code> 中，如果捕获到异常，这些代码将发出错误通知：</p>
+<pre><code><div><span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  try {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    subscriber<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  } catch <span class="token punctuation">(</span>err<span class="token punctuation">)</span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // delivers an error if it caught one</span>
+  }
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre>
+        <h3 id="释放-observable-执行" class="docs-header-link">
+          <span header-link="释放-observable-执行"></span>
+          释放 Observable 执行
+        </h3>
+      <p>因为 Observable 的执行可能是无限的，并且观察者希望在有限时间内中止执行是很常见的，所以我们需要一个 API 来取消执行。由于每次执行只对一个观察者独占，一旦观察者完成接收值，它就必须有一种方法来停止执行，以避免浪费计算能力或内存资源。</p>
+<p>当 <code>observable.subscribe</code> 调用时，观察者将附加到新创建的 Observable 执行，此调用还返回一个对象，即订阅 <code>Subscription</code>:</p>
+<pre><code><div><span class="token keyword">const</span> subscription <span class="token operator">=</span> observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>订阅 Subscription 表示正在进行的执行，并且有一个允许取消该执行的最小 API，在这里阅读有关<a target="_blank" href="https://rxjs-dev.firebaseapp.com/guide/subscription">订阅类型</a>的更多信息，调用 <code>subscription.unsubscribe()</code> 可以取消正在进行的执行：</p>
+<pre><code><div>import { from } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> <span class="token function">from</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> subscription <span class="token operator">=</span> observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token operator">/</span><span class="token operator">/</span> Later<span class="token punctuation">:</span>
+subscription<span class="token punctuation">.</span><span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><blockquote>
+<p>当你订阅时，你将获得一个 Subscription，它表示正在进行的执行，可以调用 unsubscribe() 取消执行。</p>
+</blockquote>
+<p>当我们使用 <code>create()</code> 创建 Observable 时，每个 Observable 必须定义如何释放该执行的资源，可以通过从函数 <code>subscribe()</code> 中返回自定义的 <code>unsubscribe</code> 函数来完成此操作。</p>
+<p>例如，这是我们使用 <code>setInterval</code> 清除间隔执行的方法：</p>
+<pre><code><div><span class="token keyword">const</span> observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  <span class="token operator">/</span><span class="token operator">/</span> Keep track of the interval resource
+  <span class="token keyword">const</span> intervalId <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token string">'hi'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+  <span class="token operator">/</span><span class="token operator">/</span> Provide a way of canceling <span class="token operator">and</span> disposing the interval resource
+  return function <span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+    <span class="token function">clearInterval</span><span class="token punctuation">(</span>intervalId<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>就像 <code>observable.subscribe</code> 看起来和 <code>new Observable(function subscribe() {...}</code> 像之外，我们从 <code>subscribe</code> 返回的 <code>unsubscribe</code> 在概念上等于 <code>subscription.unsubscribe</code>, 事实上，如果我们去掉围绕这些概念的 ReactiveX 类型，我们只剩下相当简单的 JavaScript:</p>
+<pre><code><div>function <span class="token function">subscribe</span><span class="token punctuation">(</span>subscriber<span class="token punctuation">)</span> {
+  <span class="token keyword">const</span> intervalId <span class="token operator">=</span> <span class="token function">setInterval</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+    subscriber<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token string">'hi'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+  return function <span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+    <span class="token function">clearInterval</span><span class="token punctuation">(</span>intervalId<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token comment" spellcheck="true">;</span>
+}
+
+<span class="token keyword">const</span> unsubscribe <span class="token operator">=</span> <span class="token function">subscribe</span><span class="token punctuation">(</span>{<span class="token keyword">next</span><span class="token punctuation">:</span> <span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span>}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token operator">/</span><span class="token operator">/</span> Later<span class="token punctuation">:</span>
+<span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">; // dispose the resources</span></div></code></pre><p>我们之所以使用诸如 Observable、Observer 和 Subscription 这样的 Rx 类型是为了获得安全性（比如 Observable 契约）和与操作符的可组合性。</p>

@@ -1,0 +1,1869 @@
+{
+  "navs": [
+    {
+      "id": "docs",
+      "path": "docs",
+      "channelPath": "docs",
+      "title": "文档",
+      "items": [
+        {
+          "id": "docs",
+          "path": "docs",
+          "channelPath": "docs",
+          "title": "介绍",
+          "items": [
+            {
+              "id": "intro",
+              "path": "intro",
+              "channelPath": "docs",
+              "title": "认识 Angular",
+              "order": 10,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "入门教程",
+                  "name": "入门教程",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "学习门槛",
+                  "name": "学习门槛",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "angular-思想",
+                  "name": "Angular 思想",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "typescript和rxjs",
+                  "name": "TypeScript和RxJS",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "总结",
+                  "name": "总结",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/intro/intro.html",
+              "originPath": "docs/guide/intro/intro.md"
+            },
+            {
+              "id": "getting-started",
+              "path": "getting-started",
+              "channelPath": "docs",
+              "title": "快速上手",
+              "order": 20,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "本地开发",
+                  "name": "本地开发",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "安装-angular-cli",
+                  "name": "安装 Angular CLI",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "创建应用",
+                  "name": "创建应用",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "启动应用",
+                  "name": "启动应用",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "stackblitz-创建和启动应用",
+                  "name": "StackBlitz 创建和启动应用",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "angular-应用目录介绍",
+                  "name": "Angular 应用目录介绍",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "数据渲染",
+                  "name": "数据渲染",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "循环渲染列表",
+                  "name": "循环渲染列表",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "条件判断与事件绑定",
+                  "name": "条件判断与事件绑定",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/intro/getting-started.html",
+              "originPath": "docs/guide/intro/getting-started.md"
+            },
+            {
+              "id": "tutorial",
+              "path": "tutorial",
+              "channelPath": "docs",
+              "title": "教程指南",
+              "order": 30,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "快速上手",
+                  "name": "快速上手",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "组件、模板和指令",
+                  "name": "组件、模板和指令",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "路由、表单和-httpclient",
+                  "name": "路由、表单和 HttpClient",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "模块、服务和依赖注入",
+                  "name": "模块、服务和依赖注入",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "测试、国际化、动画",
+                  "name": "测试、国际化、动画",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "远不止于此",
+                  "name": "远不止于此",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/intro/tutorial.html",
+              "originPath": "docs/guide/intro/tutorial.md"
+            },
+            {
+              "id": "resources",
+              "path": "resources",
+              "channelPath": "docs",
+              "title": "资源推荐",
+              "order": 100,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "组件库",
+                  "name": "组件库",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "类库",
+                  "name": "类库",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "开发工具",
+                  "name": "开发工具",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "状态管理",
+                  "name": "状态管理",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "博客及网站",
+                  "name": "博客及网站",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/intro/resources.html",
+              "originPath": "docs/guide/intro/resources.md"
+            }
+          ],
+          "order": 10
+        },
+        {
+          "id": "docs/di",
+          "path": "docs/di",
+          "channelPath": "docs",
+          "title": "依赖注入",
+          "items": [
+            {
+              "id": "concept",
+              "path": "di/concept",
+              "channelPath": "docs",
+              "title": "依赖注入概念",
+              "order": 1,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "控制反转和依赖注入",
+                  "name": "控制反转和依赖注入",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "angular-为什么会有依赖注入？",
+                  "name": "Angular 为什么会有依赖注入？",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "服务和依赖注入的关系",
+                  "name": "服务和依赖注入的关系",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "其他框架-react-和-vue-有依赖注入吗？",
+                  "name": "其他框架 React 和 Vue 有依赖注入吗？",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/di/concept.html",
+              "originPath": "docs/guide/di/concept.md"
+            },
+            {
+              "id": "intro",
+              "path": "di/intro",
+              "channelPath": "docs",
+              "title": "依赖注入简介",
+              "order": 2,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "基本使用",
+                  "name": "基本使用",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "第一步:-创建可注入服务",
+                  "name": "第一步: 创建可注入服务",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "第二步:-注入和使用服务",
+                  "name": "第二步: 注入和使用服务",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "angular-依赖注入简介",
+                  "name": "Angular 依赖注入简介",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/di/intro.html",
+              "originPath": "docs/guide/di/intro.md"
+            },
+            {
+              "id": "provider",
+              "path": "di/provider",
+              "channelPath": "docs",
+              "title": "依赖提供者",
+              "order": 3,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "如何定义提供者",
+                  "name": "如何定义提供者",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "类提供者",
+                  "name": "类提供者",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "别名类提供者",
+                  "name": "别名类提供者",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "对象提供者",
+                  "name": "对象提供者",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "工厂提供者",
+                  "name": "工厂提供者",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "接口和依赖注入",
+                  "name": "接口和依赖注入",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "multi-多个依赖值",
+                  "name": "multi 多个依赖值",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/di/provider.html",
+              "originPath": "docs/guide/di/provider.md"
+            },
+            {
+              "id": "hierarchical-di",
+              "path": "di/hierarchical-di",
+              "channelPath": "docs",
+              "title": "层级注入器",
+              "order": 4,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "两个注入器层级",
+                  "name": "两个注入器层级",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "moduleinjector",
+                  "name": "ModuleInjector",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "<strong>platform-和-root-注入器</strong>",
+                  "name": "<strong>Platform 和 Root 注入器</strong>",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "<strong>elementinjector</strong>",
+                  "name": "<strong>ElementInjector</strong>",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "解析规则",
+                  "name": "解析规则",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "解析修饰符",
+                  "name": "解析修饰符",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "在-@component()-中提供服务",
+                  "name": "在 @Component() 中提供服务",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "providers-和-viewproviders",
+                  "name": "providers 和 viewProviders",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "ng-template-注入器",
+                  "name": "ng-template 注入器",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "providein:-&quot;any&quot;-|-&quot;root&quot;-|-&quot;platform&quot;-|-ngmoduletype",
+                  "name": "provideIn: &quot;any&quot; | &quot;root&quot; | &quot;platform&quot; | NgModuleType",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "elementinjector-使用场景",
+                  "name": "ElementInjector 使用场景",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/di/hierarchical-di.html",
+              "originPath": "docs/guide/di/hierarchical-di.md"
+            },
+            {
+              "id": "advanced",
+              "path": "di/advanced",
+              "channelPath": "docs",
+              "title": "高级进阶",
+              "order": 5,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "轻量级注入令牌",
+                  "name": "轻量级注入令牌",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "令牌什么时候会被保留",
+                  "name": "令牌什么时候会被保留",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "什么时候使用轻量级注入令牌模式",
+                  "name": "什么时候使用轻量级注入令牌模式",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "使用轻量级注入令牌",
+                  "name": "使用轻量级注入令牌",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "使用轻量级注入令牌进行-api-定义",
+                  "name": "使用轻量级注入令牌进行 API 定义",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "轻量级注入令牌命名",
+                  "name": "轻量级注入令牌命名",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "解决组件循环引用",
+                  "name": "解决组件循环引用",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "惰性加载特性模块",
+                  "name": "惰性加载特性模块",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "惰性加载入门",
+                  "name": "惰性加载入门",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "如何设置惰性加载",
+                  "name": "如何设置惰性加载",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "懒加载和急性加载的区别？",
+                  "name": "懒加载和急性加载的区别？",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "forroot()-模式",
+                  "name": "forRoot() 模式",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "<code>providedin:-&#39;any&#39;</code>",
+                  "name": "<code>providedIn: &#39;any&#39;</code>",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "reflectiveinjector-和-staticinjector",
+                  "name": "ReflectiveInjector 和 StaticInjector",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "注入组件/指令/模块/管道",
+                  "name": "注入组件/指令/模块/管道",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "防止重复导入-coremodule",
+                  "name": "防止重复导入 CoreModule",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "派生类注入服务",
+                  "name": "派生类注入服务",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "forwardref-打破循环",
+                  "name": "forwardRef 打破循环",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "javascript-中的-hoisting（变量提升）",
+                  "name": "Javascript 中的 Hoisting（变量提升）",
+                  "level": 3,
+                  "type": "h3"
+                },
+                {
+                  "id": "组件注入-nameservice",
+                  "name": "组件注入 NameService",
+                  "level": 3,
+                  "type": "h3"
+                }
+              ],
+              "contentPath": "docs/guide/di/advanced.html",
+              "originPath": "docs/guide/di/advanced.md"
+            }
+          ],
+          "order": 20
+        },
+        {
+          "id": "docs/more",
+          "path": "docs/more",
+          "channelPath": "docs",
+          "title": "更多",
+          "items": [
+            {
+              "id": "about",
+              "path": "more/about",
+              "channelPath": "docs",
+              "title": "关于",
+              "order": 100,
+              "toc": "content",
+              "headings": [
+                {
+                  "id": "初步规划",
+                  "name": "初步规划",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "一起加入",
+                  "name": "一起加入",
+                  "level": 2,
+                  "type": "h2"
+                },
+                {
+                  "id": "旧站点",
+                  "name": "旧站点",
+                  "level": 2,
+                  "type": "h2"
+                }
+              ],
+              "contentPath": "docs/guide/more/about.html",
+              "originPath": "docs/guide/more/about.md"
+            }
+          ],
+          "order": 100
+        }
+      ],
+      "order": 10
+    },
+    {
+      "id": "rxjs",
+      "path": "rxjs",
+      "channelPath": "rxjs",
+      "title": "RxJS",
+      "items": [
+        {
+          "id": "intro",
+          "path": "into",
+          "channelPath": "rxjs",
+          "title": "介绍",
+          "order": 10,
+          "toc": "content",
+          "headings": [
+            {
+              "id": "第一个例子",
+              "name": "第一个例子",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "纯函数",
+              "name": "纯函数",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "流控制",
+              "name": "流控制",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "值转换",
+              "name": "值转换",
+              "level": 2,
+              "type": "h2"
+            }
+          ],
+          "contentPath": "docs/rxjs/intro.html",
+          "originPath": "docs/rxjs/intro.md"
+        },
+        {
+          "id": "observable",
+          "path": "observable",
+          "channelPath": "rxjs",
+          "title": "Observable - 可观察的",
+          "order": 20,
+          "toc": "content",
+          "headings": [
+            {
+              "id": "pull-和-push",
+              "name": "Pull 和 Push",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "observables-概括为函数",
+              "name": "Observables 概括为函数",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "一个-observable-的解剖",
+              "name": "一个 Observable 的解剖",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "创建-observables",
+              "name": "创建 Observables",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "订阅-observables",
+              "name": "订阅 Observables",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "执行-observables",
+              "name": "执行 Observables",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "释放-observable-执行",
+              "name": "释放 Observable 执行",
+              "level": 3,
+              "type": "h3"
+            }
+          ],
+          "contentPath": "docs/rxjs/observable.html",
+          "originPath": "docs/rxjs/observable.md"
+        },
+        {
+          "id": "observer",
+          "path": "observer",
+          "channelPath": "rxjs",
+          "title": "Observer - 观察者",
+          "order": 30,
+          "toc": "content",
+          "headings": [],
+          "contentPath": "docs/rxjs/observer.html",
+          "originPath": "docs/rxjs/observer.md"
+        },
+        {
+          "id": "operators",
+          "path": "operators",
+          "channelPath": "rxjs",
+          "title": "Operators - 操作符",
+          "order": 40,
+          "toc": "content",
+          "headings": [
+            {
+              "id": "什么是操作符-",
+              "name": "什么是操作符?",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "管道化",
+              "name": "管道化",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "创建操作符",
+              "name": "创建操作符",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "高阶-observables",
+              "name": "高阶 Observables",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "弹珠图",
+              "name": "弹珠图",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "操作符分类",
+              "name": "操作符分类",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "创建操作符",
+              "name": "创建操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "组合创建操作符",
+              "name": "组合创建操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "转换操作符",
+              "name": "转换操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "过滤操作符",
+              "name": "过滤操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "组合操作符",
+              "name": "组合操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "多播操作符",
+              "name": "多播操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "错误处理操作符",
+              "name": "错误处理操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "工具操作符",
+              "name": "工具操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "条件和布尔操作符",
+              "name": "条件和布尔操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "数学和聚合操作符",
+              "name": "数学和聚合操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "创建自定义操作符",
+              "name": "创建自定义操作符",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "使用-pipe()-函数制作新的操作符",
+              "name": "使用 pipe() 函数制作新的操作符",
+              "level": 3,
+              "type": "h3"
+            },
+            {
+              "id": "从头开始创建新的操作符",
+              "name": "从头开始创建新的操作符",
+              "level": 3,
+              "type": "h3"
+            }
+          ],
+          "contentPath": "docs/rxjs/operators.html",
+          "originPath": "docs/rxjs/operators.md"
+        },
+        {
+          "id": "subscription",
+          "path": "subscription",
+          "channelPath": "rxjs",
+          "title": "Subscription - 订阅",
+          "order": 50,
+          "toc": "content",
+          "headings": [],
+          "contentPath": "docs/rxjs/subscription.html",
+          "originPath": "docs/rxjs/subscription.md"
+        },
+        {
+          "id": "subjects",
+          "path": "subjects",
+          "channelPath": "rxjs",
+          "title": "Subjects - 主题",
+          "order": 60,
+          "toc": "content",
+          "headings": [
+            {
+              "id": "多播的observable",
+              "name": "多播的Observable",
+              "level": 1,
+              "type": "h1"
+            },
+            {
+              "id": "引用计数",
+              "name": "引用计数",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "行为主题",
+              "name": "行为主题",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "重播主题",
+              "name": "重播主题",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "异步主题",
+              "name": "异步主题",
+              "level": 2,
+              "type": "h2"
+            }
+          ],
+          "contentPath": "docs/rxjs/subjects.html",
+          "originPath": "docs/rxjs/subjects.md"
+        },
+        {
+          "id": "scheduler",
+          "path": "scheduler",
+          "channelPath": "rxjs",
+          "title": "Scheduler - 调度器",
+          "order": 70,
+          "toc": "content",
+          "headings": [
+            {
+              "id": "调度器类型",
+              "name": "调度器类型",
+              "level": 2,
+              "type": "h2"
+            },
+            {
+              "id": "使用调度器",
+              "name": "使用调度器",
+              "level": 2,
+              "type": "h2"
+            }
+          ],
+          "contentPath": "docs/rxjs/scheduler.html",
+          "originPath": "docs/rxjs/scheduler.md"
+        }
+      ],
+      "order": 20
+    },
+    {
+      "title": "微前端",
+      "path": "https://github.com/worktile/ngx-planet",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 官网",
+      "path": "https://angular.io",
+      "isExternal": true
+    },
+    {
+      "title": "Angular 中文版",
+      "path": "https://angular.cn",
+      "isExternal": true
+    }
+  ],
+  "docs": [
+    {
+      "id": "cdk",
+      "path": "component/cdk",
+      "channelPath": "docs",
+      "title": "使用 CDK",
+      "order": 30,
+      "toc": "content",
+      "headings": [],
+      "contentPath": "docs/guide/component/cdk.html",
+      "originPath": "docs/guide/component/cdk.md"
+    },
+    {
+      "id": "first-component",
+      "path": "component/first-component",
+      "channelPath": "docs",
+      "title": "开始编写第一个组件",
+      "order": 20,
+      "toc": "content",
+      "headings": [],
+      "contentPath": "docs/guide/component/first-component.html",
+      "originPath": "docs/guide/component/first-component.md"
+    },
+    {
+      "id": "initialization",
+      "path": "component/initialization",
+      "channelPath": "docs",
+      "title": "初始化环境",
+      "order": 10,
+      "toc": "content",
+      "headings": [],
+      "contentPath": "docs/guide/component/initialization.html",
+      "originPath": "docs/guide/component/initialization.md"
+    },
+    {
+      "id": "advanced",
+      "path": "di/advanced",
+      "channelPath": "docs",
+      "title": "高级进阶",
+      "order": 5,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "轻量级注入令牌",
+          "name": "轻量级注入令牌",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "令牌什么时候会被保留",
+          "name": "令牌什么时候会被保留",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "什么时候使用轻量级注入令牌模式",
+          "name": "什么时候使用轻量级注入令牌模式",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "使用轻量级注入令牌",
+          "name": "使用轻量级注入令牌",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "使用轻量级注入令牌进行-api-定义",
+          "name": "使用轻量级注入令牌进行 API 定义",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "轻量级注入令牌命名",
+          "name": "轻量级注入令牌命名",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "解决组件循环引用",
+          "name": "解决组件循环引用",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "惰性加载特性模块",
+          "name": "惰性加载特性模块",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "惰性加载入门",
+          "name": "惰性加载入门",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "如何设置惰性加载",
+          "name": "如何设置惰性加载",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "懒加载和急性加载的区别？",
+          "name": "懒加载和急性加载的区别？",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "forroot()-模式",
+          "name": "forRoot() 模式",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "<code>providedin:-&#39;any&#39;</code>",
+          "name": "<code>providedIn: &#39;any&#39;</code>",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "reflectiveinjector-和-staticinjector",
+          "name": "ReflectiveInjector 和 StaticInjector",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "注入组件/指令/模块/管道",
+          "name": "注入组件/指令/模块/管道",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "防止重复导入-coremodule",
+          "name": "防止重复导入 CoreModule",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "派生类注入服务",
+          "name": "派生类注入服务",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "forwardref-打破循环",
+          "name": "forwardRef 打破循环",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "javascript-中的-hoisting（变量提升）",
+          "name": "Javascript 中的 Hoisting（变量提升）",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "组件注入-nameservice",
+          "name": "组件注入 NameService",
+          "level": 3,
+          "type": "h3"
+        }
+      ],
+      "contentPath": "docs/guide/di/advanced.html",
+      "originPath": "docs/guide/di/advanced.md"
+    },
+    {
+      "id": "concept",
+      "path": "di/concept",
+      "channelPath": "docs",
+      "title": "依赖注入概念",
+      "order": 1,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "控制反转和依赖注入",
+          "name": "控制反转和依赖注入",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "angular-为什么会有依赖注入？",
+          "name": "Angular 为什么会有依赖注入？",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "服务和依赖注入的关系",
+          "name": "服务和依赖注入的关系",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "其他框架-react-和-vue-有依赖注入吗？",
+          "name": "其他框架 React 和 Vue 有依赖注入吗？",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/di/concept.html",
+      "originPath": "docs/guide/di/concept.md"
+    },
+    {
+      "id": "hierarchical-di",
+      "path": "di/hierarchical-di",
+      "channelPath": "docs",
+      "title": "层级注入器",
+      "order": 4,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "两个注入器层级",
+          "name": "两个注入器层级",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "moduleinjector",
+          "name": "ModuleInjector",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "<strong>platform-和-root-注入器</strong>",
+          "name": "<strong>Platform 和 Root 注入器</strong>",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "<strong>elementinjector</strong>",
+          "name": "<strong>ElementInjector</strong>",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "解析规则",
+          "name": "解析规则",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "解析修饰符",
+          "name": "解析修饰符",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "在-@component()-中提供服务",
+          "name": "在 @Component() 中提供服务",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "providers-和-viewproviders",
+          "name": "providers 和 viewProviders",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "ng-template-注入器",
+          "name": "ng-template 注入器",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "providein:-&quot;any&quot;-|-&quot;root&quot;-|-&quot;platform&quot;-|-ngmoduletype",
+          "name": "provideIn: &quot;any&quot; | &quot;root&quot; | &quot;platform&quot; | NgModuleType",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "elementinjector-使用场景",
+          "name": "ElementInjector 使用场景",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/di/hierarchical-di.html",
+      "originPath": "docs/guide/di/hierarchical-di.md"
+    },
+    {
+      "id": "intro",
+      "path": "di/intro",
+      "channelPath": "docs",
+      "title": "依赖注入简介",
+      "order": 2,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "基本使用",
+          "name": "基本使用",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "第一步:-创建可注入服务",
+          "name": "第一步: 创建可注入服务",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "第二步:-注入和使用服务",
+          "name": "第二步: 注入和使用服务",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "angular-依赖注入简介",
+          "name": "Angular 依赖注入简介",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/di/intro.html",
+      "originPath": "docs/guide/di/intro.md"
+    },
+    {
+      "id": "provider",
+      "path": "di/provider",
+      "channelPath": "docs",
+      "title": "依赖提供者",
+      "order": 3,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "如何定义提供者",
+          "name": "如何定义提供者",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "类提供者",
+          "name": "类提供者",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "别名类提供者",
+          "name": "别名类提供者",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "对象提供者",
+          "name": "对象提供者",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "工厂提供者",
+          "name": "工厂提供者",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "接口和依赖注入",
+          "name": "接口和依赖注入",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "multi-多个依赖值",
+          "name": "multi 多个依赖值",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/di/provider.html",
+      "originPath": "docs/guide/di/provider.md"
+    },
+    {
+      "id": "getting-started",
+      "path": "getting-started",
+      "channelPath": "docs",
+      "title": "快速上手",
+      "order": 20,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "本地开发",
+          "name": "本地开发",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "安装-angular-cli",
+          "name": "安装 Angular CLI",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "创建应用",
+          "name": "创建应用",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "启动应用",
+          "name": "启动应用",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "stackblitz-创建和启动应用",
+          "name": "StackBlitz 创建和启动应用",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "angular-应用目录介绍",
+          "name": "Angular 应用目录介绍",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "数据渲染",
+          "name": "数据渲染",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "循环渲染列表",
+          "name": "循环渲染列表",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "条件判断与事件绑定",
+          "name": "条件判断与事件绑定",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/intro/getting-started.html",
+      "originPath": "docs/guide/intro/getting-started.md"
+    },
+    {
+      "id": "intro",
+      "path": "intro",
+      "channelPath": "docs",
+      "title": "认识 Angular",
+      "order": 10,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "入门教程",
+          "name": "入门教程",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "学习门槛",
+          "name": "学习门槛",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "angular-思想",
+          "name": "Angular 思想",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "typescript和rxjs",
+          "name": "TypeScript和RxJS",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "总结",
+          "name": "总结",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/intro/intro.html",
+      "originPath": "docs/guide/intro/intro.md"
+    },
+    {
+      "id": "resources",
+      "path": "resources",
+      "channelPath": "docs",
+      "title": "资源推荐",
+      "order": 100,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "组件库",
+          "name": "组件库",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "类库",
+          "name": "类库",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "开发工具",
+          "name": "开发工具",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "状态管理",
+          "name": "状态管理",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "博客及网站",
+          "name": "博客及网站",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/intro/resources.html",
+      "originPath": "docs/guide/intro/resources.md"
+    },
+    {
+      "id": "tutorial",
+      "path": "tutorial",
+      "channelPath": "docs",
+      "title": "教程指南",
+      "order": 30,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "快速上手",
+          "name": "快速上手",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "组件、模板和指令",
+          "name": "组件、模板和指令",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "路由、表单和-httpclient",
+          "name": "路由、表单和 HttpClient",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "模块、服务和依赖注入",
+          "name": "模块、服务和依赖注入",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "测试、国际化、动画",
+          "name": "测试、国际化、动画",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "远不止于此",
+          "name": "远不止于此",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/intro/tutorial.html",
+      "originPath": "docs/guide/intro/tutorial.md"
+    },
+    {
+      "id": "about",
+      "path": "more/about",
+      "channelPath": "docs",
+      "title": "关于",
+      "order": 100,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "初步规划",
+          "name": "初步规划",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "一起加入",
+          "name": "一起加入",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "旧站点",
+          "name": "旧站点",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/guide/more/about.html",
+      "originPath": "docs/guide/more/about.md"
+    },
+    {
+      "id": "intro",
+      "path": "into",
+      "channelPath": "rxjs",
+      "title": "介绍",
+      "order": 10,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "第一个例子",
+          "name": "第一个例子",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "纯函数",
+          "name": "纯函数",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "流控制",
+          "name": "流控制",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "值转换",
+          "name": "值转换",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/rxjs/intro.html",
+      "originPath": "docs/rxjs/intro.md"
+    },
+    {
+      "id": "observable",
+      "path": "observable",
+      "channelPath": "rxjs",
+      "title": "Observable - 可观察的",
+      "order": 20,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "pull-和-push",
+          "name": "Pull 和 Push",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "observables-概括为函数",
+          "name": "Observables 概括为函数",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "一个-observable-的解剖",
+          "name": "一个 Observable 的解剖",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "创建-observables",
+          "name": "创建 Observables",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "订阅-observables",
+          "name": "订阅 Observables",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "执行-observables",
+          "name": "执行 Observables",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "释放-observable-执行",
+          "name": "释放 Observable 执行",
+          "level": 3,
+          "type": "h3"
+        }
+      ],
+      "contentPath": "docs/rxjs/observable.html",
+      "originPath": "docs/rxjs/observable.md"
+    },
+    {
+      "id": "observer",
+      "path": "observer",
+      "channelPath": "rxjs",
+      "title": "Observer - 观察者",
+      "order": 30,
+      "toc": "content",
+      "headings": [],
+      "contentPath": "docs/rxjs/observer.html",
+      "originPath": "docs/rxjs/observer.md"
+    },
+    {
+      "id": "operators",
+      "path": "operators",
+      "channelPath": "rxjs",
+      "title": "Operators - 操作符",
+      "order": 40,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "什么是操作符-",
+          "name": "什么是操作符?",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "管道化",
+          "name": "管道化",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "创建操作符",
+          "name": "创建操作符",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "高阶-observables",
+          "name": "高阶 Observables",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "弹珠图",
+          "name": "弹珠图",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "操作符分类",
+          "name": "操作符分类",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "创建操作符",
+          "name": "创建操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "组合创建操作符",
+          "name": "组合创建操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "转换操作符",
+          "name": "转换操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "过滤操作符",
+          "name": "过滤操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "组合操作符",
+          "name": "组合操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "多播操作符",
+          "name": "多播操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "错误处理操作符",
+          "name": "错误处理操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "工具操作符",
+          "name": "工具操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "条件和布尔操作符",
+          "name": "条件和布尔操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "数学和聚合操作符",
+          "name": "数学和聚合操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "创建自定义操作符",
+          "name": "创建自定义操作符",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "使用-pipe()-函数制作新的操作符",
+          "name": "使用 pipe() 函数制作新的操作符",
+          "level": 3,
+          "type": "h3"
+        },
+        {
+          "id": "从头开始创建新的操作符",
+          "name": "从头开始创建新的操作符",
+          "level": 3,
+          "type": "h3"
+        }
+      ],
+      "contentPath": "docs/rxjs/operators.html",
+      "originPath": "docs/rxjs/operators.md"
+    },
+    {
+      "id": "scheduler",
+      "path": "scheduler",
+      "channelPath": "rxjs",
+      "title": "Scheduler - 调度器",
+      "order": 70,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "调度器类型",
+          "name": "调度器类型",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "使用调度器",
+          "name": "使用调度器",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/rxjs/scheduler.html",
+      "originPath": "docs/rxjs/scheduler.md"
+    },
+    {
+      "id": "subjects",
+      "path": "subjects",
+      "channelPath": "rxjs",
+      "title": "Subjects - 主题",
+      "order": 60,
+      "toc": "content",
+      "headings": [
+        {
+          "id": "多播的observable",
+          "name": "多播的Observable",
+          "level": 1,
+          "type": "h1"
+        },
+        {
+          "id": "引用计数",
+          "name": "引用计数",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "行为主题",
+          "name": "行为主题",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "重播主题",
+          "name": "重播主题",
+          "level": 2,
+          "type": "h2"
+        },
+        {
+          "id": "异步主题",
+          "name": "异步主题",
+          "level": 2,
+          "type": "h2"
+        }
+      ],
+      "contentPath": "docs/rxjs/subjects.html",
+      "originPath": "docs/rxjs/subjects.md"
+    },
+    {
+      "id": "subscription",
+      "path": "subscription",
+      "channelPath": "rxjs",
+      "title": "Subscription - 订阅",
+      "order": 50,
+      "toc": "content",
+      "headings": [],
+      "contentPath": "docs/rxjs/subscription.html",
+      "originPath": "docs/rxjs/subscription.md"
+    }
+  ],
+  "homeMeta": {
+    "title": "首页",
+    "hero": {
+      "title": "NG-NICE",
+      "description": "努力打造成为 Angular 开发者提供优质内容的平台",
+      "backgroundColor": "#f5f6f8",
+      "actions": [
+        {
+          "text": "认识 Angular",
+          "link": "/docs/intro",
+          "btnShape": "round,",
+          "btnType": "outline-primary-light"
+        }
+      ]
+    },
+    "features": [
+      {
+        "icon": "https://cdn.pingcode.com/open-sources/docgeni/home/feature4.png",
+        "title": "资源推荐",
+        "description": "提供 Angular 相关的资源推荐，包括组件库，开发工具，状态管理以及优秀网站"
+      },
+      {
+        "icon": "https://cdn.worktile.com/open-sources/ngx-tethys/home/feature5.png",
+        "title": "Angular 入门",
+        "description": "提供 Angular 入门相关文档"
+      },
+      {
+        "icon": "https://cdn.pingcode.com/open-sources/docgeni/home/feature4.png",
+        "title": "最佳实践",
+        "description": "提供 Angular 的最佳实践教程"
+      }
+    ],
+    "contentPath": "docs/index.html"
+  }
+}
