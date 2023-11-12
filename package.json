@@ -1,0 +1,52 @@
+{
+  "name": "site",
+  "version": "0.0.7",
+  "scripts": {
+    "ng": "ng",
+    "start": "docgeni serve",
+    "build": "ng build",
+    "build:prod": "docgeni build",
+    "pub": "yarn build:prod && cp ./package.json ./dist/site && yarn pub:git",
+    "pub:git": "wpm git-publish --source ./dist/site --name site-builds --organization ngnice",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "preinstall": "node scripts/check-yarn.js"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^16.2.12",
+    "@angular/cdk": "^16.2.12",
+    "@angular/common": "^16.2.12",
+    "@angular/compiler": "^16.2.12",
+    "@angular/core": "^16.2.12",
+    "@angular/forms": "^16.2.12",
+    "@angular/platform-browser": "^16.2.12",
+    "@angular/platform-browser-dynamic": "^16.2.12",
+    "@angular/router": "^16.2.12",
+    "rxjs": "~6.5.4",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.13.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.2.10",
+    "@angular/cli": "^16.2.10",
+    "@angular/compiler-cli": "^16.2.12",
+    "@angular/language-service": "^16.2.12",
+    "@docgeni/cli": "^2.2.1",
+    "@docgeni/template": "^2.2.1",
+    "@types/jasmine": "~3.6.0",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
+    "@worktile-devkit/pm": "^1.0.0-beta.21",
+    "jasmine-core": "~3.6.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "~6.3.16",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-jasmine": "~4.0.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "ts-node": "~8.3.0",
+    "typescript": "~4.9.5"
+  }
+}

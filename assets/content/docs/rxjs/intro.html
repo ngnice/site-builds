@@ -1,0 +1,89 @@
+<p>RxJS 是一个通过使用可观察序列组合异步和基于事件的程序的库。它提供了一些核心类型：Observable、卫星类型（Observer、Schedulers、Subjects）和一些操作符处理异步事件集合，这些操作符受数组（map、filter、reduce、every等）启发，允许将异步事件作为集合处理。</p>
+<blockquote>
+<p>可以把 RxJS 看作是事件的 Lodash。</p>
+</blockquote>
+<p>ReactiveX 将观察者模式与迭代器模式以及函数式编程与集合相结合，以满足管理事件序列的理想方式的需要。
+RxJS 中解决异步事件管理的基本概念是：</p>
+<ul>
+<li>Observable: 表示未来值或事件的可调用的集合。 </li>
+<li>Observer: 是一个回调的集合，它知道如何监听 Observable 对象传递的值。</li>
+<li>Subscription: 表示一个 Observable 的执行，主要用于取消执行。</li>
+<li>Operators: 是一些纯函数，支持函数式编程风格来处理具有 map、filter、concat、reduce 等操作的集合。</li>
+<li>Subject: 相当于 EventEmitter，也是将值或事件多播给多个观察者的唯一方法。</li>
+<li>Schedulers: 是控制并发性的集中调度器，允许我们在计算发生时进行协调，比如：setTimeout、requestAnimationFrame 或其他。</li>
+</ul>
+
+        <h2 id="%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90" class="docs-header-link">
+          <span header-link="%E7%AC%AC%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"></span>
+          第一个例子
+        </h2>
+      <p>正常注册事件侦听器。</p>
+<pre><code><div>document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Clicked!'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>使用 RxJS 创建一个 Observable 替代。</p>
+<pre><code><div>import { fromEvent } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+<span class="token function">fromEvent</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> <span class="token string">'click'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Clicked!'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre>
+        <h2 id="%E7%BA%AF%E5%87%BD%E6%95%B0" class="docs-header-link">
+          <span header-link="%E7%BA%AF%E5%87%BD%E6%95%B0"></span>
+          纯函数
+        </h2>
+      <p>RxJS 的强大之处在于它能够使用纯函数生成值，这意味着你的代码不太容易出错。
+通常你会创建一个不纯的函数，非纯函数会导致代码的其他部分可能会扰乱你的状态。</p>
+<pre><code><div>let count <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">;</span>
+document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>`Clicked ${<span class="token operator">+</span><span class="token operator">+</span>count} times`<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>使用 RxJS 可以隔离状态。</p>
+<pre><code><div>import { fromEvent } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+import { scan } from <span class="token string">'rxjs/operators'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token function">fromEvent</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> <span class="token string">'click'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span><span class="token function">scan</span><span class="token punctuation">(</span>count <span class="token operator">=</span><span class="token operator">></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>count <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>`Clicked ${count} times`<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><div class="dg-paragraph"><code>scan</code>操作符与数组的<code>reduce</code>类似。它接受2个参数，一个是回调函数，一个是初始值，回调函数的返回值将作为下次运行传入的参数，第一次执行回调函数的时候传入初始值。</div>
+
+        <h2 id="%E6%B5%81%E6%8E%A7%E5%88%B6" class="docs-header-link">
+          <span header-link="%E6%B5%81%E6%8E%A7%E5%88%B6"></span>
+          流控制
+        </h2>
+      <p>RxJS 提供了一整套操作符，这些操作符可以帮助我们控制事件如何通过可观察对象流动。
+下面是使用普通的 JavaScript 实现如何允许每秒最多单击一次：</p>
+<pre><code><div>let count <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">;</span>
+let rate <span class="token operator">=</span> <span class="token number">1000</span><span class="token comment" spellcheck="true">;</span>
+let lastClick <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> rate<span class="token comment" spellcheck="true">;</span>
+document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> lastClick <span class="token operator">>=</span> rate<span class="token punctuation">)</span> {
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>`Clicked ${<span class="token operator">+</span><span class="token operator">+</span>count} times`<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    lastClick <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>使用 RxJS 实现如下:</p>
+<pre><code><div>import { fromEvent } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+import { throttleTime<span class="token punctuation">,</span> scan } from <span class="token string">'rxjs/operators'</span><span class="token comment" spellcheck="true">;</span>
+​
+<span class="token function">fromEvent</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> <span class="token string">'click'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+    <span class="token function">throttleTime</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">scan</span><span class="token punctuation">(</span>count <span class="token operator">=</span><span class="token operator">></span> count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>count <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>`Clicked ${count} times`<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>其他流控制操作符还有 <code>filter</code>、<code>delay</code>、<code>debounceTime</code>、<code>take</code>、<code>takeUntil</code>、<code>distinctUntilChanged</code> 等。</p>
+
+        <h2 id="%E5%80%BC%E8%BD%AC%E6%8D%A2" class="docs-header-link">
+          <span header-link="%E5%80%BC%E8%BD%AC%E6%8D%A2"></span>
+          值转换
+        </h2>
+      <p>我们可以转换在 Observables 中传递的值。
+下面是在纯 JavaScript 中为每次单击添加当前鼠标x位置：</p>
+<pre><code><div>let count <span class="token operator">=</span> <span class="token number">0</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> rate <span class="token operator">=</span> <span class="token number">1000</span><span class="token comment" spellcheck="true">;</span>
+let lastClick <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> rate<span class="token comment" spellcheck="true">;</span>
+document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> event <span class="token operator">=</span><span class="token operator">></span> {
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> lastClick <span class="token operator">>=</span> rate<span class="token punctuation">)</span> {
+    count <span class="token operator">+=</span> event<span class="token punctuation">.</span>clientX<span class="token comment" spellcheck="true">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+    lastClick <span class="token operator">=</span> Date<span class="token punctuation">.</span><span class="token function">now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>使用 RxJS 实现如下:</p>
+<pre><code><div>import { fromEvent } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+import { throttleTime<span class="token punctuation">,</span> map<span class="token punctuation">,</span> scan } from <span class="token string">'rxjs/operators'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token function">fromEvent</span><span class="token punctuation">(</span>document<span class="token punctuation">,</span> <span class="token string">'click'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+    <span class="token function">throttleTime</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">map</span><span class="token punctuation">(</span>event <span class="token operator">=</span><span class="token operator">></span> event<span class="token punctuation">.</span>clientX<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">scan</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token punctuation">,</span> clientX<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> count <span class="token operator">+</span> clientX<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>count <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>其他的类似操作符有：<code>pluck</code>, <code>pairwise</code>, <code>sample</code> 等。</p>
