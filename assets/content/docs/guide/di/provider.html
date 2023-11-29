@@ -1,0 +1,227 @@
+<p>Angular 官方文档对于依赖提供者，也就是<code>providers</code>的解释如下：</p>
+<p>通过配置提供者，你可以把服务提供给那些需要它们的应用部件。
+<alert>By configuring providers, you can make services available to the parts of your application that need them.</alert></p>
+<p>依赖提供者会使用 DI 令牌来配置注入器，注入器会用它来提供这个依赖值的具体的、运行时版本
+<alert>A dependency provider configures an injector with a DI token, which that injector uses to provide the runtime version of a dependency value.</alert></p>
+<p>简单总结<code>依赖提供者</code>做了两件事：</p>
+<ul>
+<li><strong>告诉注入器如何提供依赖值</strong></li>
+<li><strong>限制服务可使用的范围</strong></li>
+</ul>
+<p>在之前的示例中，当使用<code>@Inject(HeroService)</code>注入一个服务时，Angular 注入器会通过<code>new HeroService()</code>实例化一个类返回依赖值，类实例化其实就是一种<strong>如何提供依赖值</strong>的方式，那么 Angular 中除了类实例化提供依赖值外还提供给了如下类型的<code>Provider</code>，每种<code>Provider</code>都有其使用场景。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">export</span> <span class="token keyword">declare</span> type Provider <span class="token operator">=</span> TypeProvider <span class="token operator">|</span> ValueProvider <span class="token operator">|</span> ClassProvider 
+<span class="token operator">|</span> ConstructorProvider <span class="token operator">|</span> ExistingProvider <span class="token operator">|</span> FactoryProvider <span class="token operator">|</span> <span class="token keyword">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">declare</span> type StaticProvider <span class="token operator">=</span> ValueProvider <span class="token operator">|</span> ExistingProvider <span class="token operator">|</span> 
+  StaticClassProvider <span class="token operator">|</span> ConstructorProvider <span class="token operator">|</span> FactoryProvider <span class="token operator">|</span> <span class="token keyword">any</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span></div></code></pre>
+<p>关于<strong>限制服务可使用的范围</strong>就更好理解了，满足只能在某个模块或者组件注入<code>HeroService</code>的场景。</p>
+
+        <h2 id="%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89%E6%8F%90%E4%BE%9B%E8%80%85" class="docs-header-link">
+          <span header-link="%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89%E6%8F%90%E4%BE%9B%E8%80%85"></span>
+          如何定义提供者
+        </h2>
+      <p>在组件或者模块中通过装饰器元数据<code>providers</code>定义提供者。</p>
+<p>比如:<strong>类提供者</strong></p>
+<div class="dg-paragraph"><img src="assets/images/di/provider-02.png" alt="image.png"></div>
+<ul>
+<li><strong>provide</strong> 属性是依赖令牌，它作为一个 key，在定义依赖值和配置注入器时使用，可以是一个<strong>类的类型</strong>、  <strong>InjectionToken</strong>、或者字符串，甚至对象，但是不能是一个 Interface、数字和布尔类型。</li>
+<li>第二个属性是一个提供者定义对象，它告诉注入器要如何创建依赖值。 提供者定义对象中的 key 可以是   <code>useClass</code>   —— 就像这个例子中一样。 也可以是 <code>useExisting</code>、<code>useValue</code>或<code>useFactory</code>, 每一个 key 都用于提供一种不同类型的依赖。</li>
+</ul>
+<div class="dg-paragraph"><img src="assets/images/di/provider-03.png" alt="image.png"></div>
+
+        <h2 id="%E7%B1%BB%E6%8F%90%E4%BE%9B%E8%80%85" class="docs-header-link">
+          <span header-link="%E7%B1%BB%E6%8F%90%E4%BE%9B%E8%80%85"></span>
+          类提供者
+        </h2>
+      <p>类型: <code>TypeProvider</code>和<code>ClassProvider</code>，类提供者应该是最常用的一种，在<a href="docs/di/intro">依赖注入简介</a>章节的示例就是，简写和全写的配置如下：</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token punctuation">{</span>
+  provides<span class="token punctuation">:</span> <span class="token punctuation">[</span> Logger <span class="token punctuation">]</span>   <span class="token comment" spellcheck="true">// 简写</span>
+  provides<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> Logger<span class="token punctuation">,</span> useClass<span class="token punctuation">:</span> Logger <span class="token punctuation">}</span><span class="token punctuation">]</span>  <span class="token comment" spellcheck="true">// 全写  </span>
+<span class="token punctuation">}</span></div></code></pre>
+<ul>
+<li><code>provide: Logger</code> 意思是把类的类型作为 **DI Token(依赖令牌)**。</li>
+<li><code>useClass</code> 表示使用此类实例化作为依赖值，其实就是通过<code>new Logger()</code>返回依赖值。</li>
+</ul>
+<div class="dg-paragraph"><strong>使用场景：</strong></div>
+<ul>
+<li>所有 class 定义的服务默认都是用<strong>类提供者</strong>。</li>
+<li>指定替代性的类提供者，替换原有服务的行为实现可扩展性，这样我在使用的时候还是注入<code>Logger</code>，但是实际返回的对象是<code>BetterLogger</code>示例。</li>
+</ul>
+<pre class="language-ts"><code class="language-ts"><div><span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> Logger<span class="token punctuation">,</span> useClass<span class="token punctuation">:</span> BetterLogger <span class="token punctuation">}</span><span class="token punctuation">]</span> 
+<span class="token comment" spellcheck="true">// 当使用 Logger 令牌请求 Logger 时，返回一个 BetterLogger</span></div></code></pre>
+
+        <h2 id="%E5%88%AB%E5%90%8D%E7%B1%BB%E6%8F%90%E4%BE%9B%E8%80%85" class="docs-header-link">
+          <span header-link="%E5%88%AB%E5%90%8D%E7%B1%BB%E6%8F%90%E4%BE%9B%E8%80%85"></span>
+          别名类提供者
+        </h2>
+      <p>类型: <code>ExistingProvider</code>，在下面的例子中，当组件请求新的或旧的 Logger 时，注入器都会注入一个   <code>NewLogger</code>   的实例。 通过这种方式，  <code>OldLogger</code>就成了<code>NewLogger</code>的别名。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token punctuation">[</span> 
+  NewLogger<span class="token punctuation">,</span>
+  <span class="token comment" spellcheck="true">// Alias OldLogger reference to NewLogger</span>
+  <span class="token punctuation">{</span> provide<span class="token punctuation">:</span> OldLogger<span class="token punctuation">,</span> useExisting<span class="token punctuation">:</span> NewLogger<span class="token punctuation">}</span>
+<span class="token punctuation">]</span></div></code></pre>
+<p>那么别名类提供者和类提供者有什么区别呢？</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token punctuation">[</span> 
+  NewLogger<span class="token punctuation">,</span>
+  <span class="token punctuation">{</span> provide<span class="token punctuation">:</span> OldLogger<span class="token punctuation">,</span> useClass<span class="token punctuation">:</span> NewLogger<span class="token punctuation">}</span>
+<span class="token punctuation">]</span></div></code></pre>
+<ul>
+<li><code>useExisting</code>   值是一个   <strong>DI Token</strong>  ，provide 也是一个   <strong>DI Token，</strong>  2个 Token 指向同一个实例。</li>
+<li><code>useClass</code>   值是一个可以实例化的类，也就是可以 new 出来的类，这个类可以是任何类。</li>
+</ul>
+<div class="dg-paragraph"><strong>使用场景：</strong></div>
+<ul>
+<li>收窄类型，比如<code>Logger</code>类的返回的方法和属性太多，当前场景只需要使用少量的属性和函数，可以定义一个简化版的 <strong>MinimalLogger</strong>，通过注入<code>MinimalLogger</code>使用，运行时返回的其实还是<code>Logger</code>对象。</li>
+<li>重构，替换命名，一次性无法完全修改，先临时提供一个新的别名，将来逐步替换。</li>
+<li>解决循环引用问题，为类接口(抽象)指定别名。</li>
+</ul>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// Class used as a "narrowing" interface that exposes a minimal logger</span>
+<span class="token comment" spellcheck="true">// Other members of the actual implementation are invisible</span>
+<span class="token keyword">export</span> abstract <span class="token keyword">class</span> <span class="token class-name">MinimalLogger</span> <span class="token punctuation">{</span>
+  abstract logs<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  abstract logInfo<span class="token punctuation">:</span> <span class="token punctuation">(</span>msg<span class="token punctuation">:</span> <span class="token keyword">string</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token keyword">void</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token punctuation">{</span> provide<span class="token punctuation">:</span> MinimalLogger<span class="token punctuation">,</span> useExisting<span class="token punctuation">:</span> LoggerService <span class="token punctuation">}</span><span class="token punctuation">,</span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// parent.ts</span>
+<span class="token keyword">class</span> <span class="token class-name">abstract</span> Parent <span class="token punctuation">{</span>
+     <span class="token operator">...</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// alex.component.ts</span>
+providers<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> Parent<span class="token punctuation">,</span> useExisting<span class="token punctuation">:</span> <span class="token function">forwardRef</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> AlexComponent<span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token keyword">class</span> <span class="token class-name">AlexComponent</span> <span class="token punctuation">{</span>
+   <span class="token comment" spellcheck="true">// ChildComponent</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// child.component.ts</span>
+<span class="token keyword">class</span> <span class="token class-name">ChildComponent</span> <span class="token punctuation">{</span>
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span>parent<span class="token punctuation">:</span> Parent<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</div></code></pre>
+
+        <h2 id="%E5%AF%B9%E8%B1%A1%E6%8F%90%E4%BE%9B%E8%80%85" class="docs-header-link">
+          <span header-link="%E5%AF%B9%E8%B1%A1%E6%8F%90%E4%BE%9B%E8%80%85"></span>
+          对象提供者
+        </h2>
+      <p>类型: <code>ValueProvider</code>，要注入一个对象，可以用<code>useValue</code>选项来配置注入器，下面的提供者定义对象使用<code>useValue</code>作为 key 来把该变量与<code>Logger</code>令牌关联起来。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// An object in the shape of the logger service</span>
+<span class="token keyword">function</span> <span class="token function">silentLoggerFn</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> silentLogger <span class="token operator">=</span> <span class="token punctuation">{</span>
+  logs<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Silent logger says "hahaha!". Provided via "useValue"'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  log<span class="token punctuation">:</span> silentLoggerFn
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> Logger<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> silentLogger <span class="token punctuation">}</span><span class="token punctuation">]</span></div></code></pre>
+<div class="dg-paragraph"><strong>使用场景：</strong></div>
+<p>通过对象提供者注入一个配置对象，一般推荐使用<code>InjectionToken</code>作为令牌。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/app.config.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> InjectionToken <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> APP_CONFIG <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InjectionToken</span><span class="token operator">&lt;</span>AppConfig<span class="token operator">></span><span class="token punctuation">(</span><span class="token string">'app.config'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> HERO_DI_CONFIG<span class="token punctuation">:</span> AppConfig <span class="token operator">=</span> <span class="token punctuation">{</span>
+  apiEndpoint<span class="token punctuation">:</span> <span class="token string">'api.heroes.com'</span><span class="token punctuation">,</span>
+  title<span class="token punctuation">:</span> <span class="token string">'Dependency Injection'</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/app.module.ts (providers)</span>
+providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span> provide<span class="token punctuation">:</span> APP_CONFIG<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> HERO_DI_CONFIG <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">,</span></div></code></pre>
+<p>当使用<code>InjectionToken</code>作为令牌时，在组件或者服务中必须借助参数装饰器<code>@Inject()</code>，才可以把这个配置对象注入到构造函数中。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/app.component.ts</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Inject</span><span class="token punctuation">(</span>APP_CONFIG<span class="token punctuation">)</span> config<span class="token punctuation">:</span> AppConfig<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>title <span class="token operator">=</span> config<span class="token punctuation">.</span>title<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><alert>Inject, 类构造函数中依赖项参数上的参数装饰器，用于指定依赖项的自定义提供者，参数传入 DI Token，映射到要注入的依赖项。</alert></div>
+<p>同时在定义<code>InjectionToken</code>的时候还可以设置<code>providedIn</code>和<code>factory</code>。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">export</span> <span class="token keyword">const</span> TOKEN_FACTORY <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">InjectionToken</span><span class="token punctuation">(</span><span class="token string">'factory-token'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    providedIn<span class="token punctuation">:</span> <span class="token string">'root'</span><span class="token punctuation">,</span>
+    factory<span class="token punctuation">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">'I am from InjectionToken factory'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div></code></pre>
+
+        <h2 id="%E5%B7%A5%E5%8E%82%E6%8F%90%E4%BE%9B%E8%80%85" class="docs-header-link">
+          <span header-link="%E5%B7%A5%E5%8E%82%E6%8F%90%E4%BE%9B%E8%80%85"></span>
+          工厂提供者
+        </h2>
+      <p>类型: <code>FactoryProvider</code>，要想根据运行前尚不可用的信息创建可变的依赖值，可以使用工厂提供者。也就是完全自己决定如何创建依赖。</p>
+<p>比如：只有授权用户才能看到<code>HeroService</code>中的秘密英雄。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero.service.ts (excerpt)</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span>
+  <span class="token keyword">private</span> logger<span class="token punctuation">:</span> Logger<span class="token punctuation">,</span>
+  <span class="token keyword">private</span> isAuthorized<span class="token punctuation">:</span> <span class="token keyword">boolean</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+<span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> auth <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>isAuthorized <span class="token operator">?</span> <span class="token string">'authorized '</span> <span class="token punctuation">:</span> <span class="token string">'unauthorized'</span><span class="token punctuation">;</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token string">`Getting heroes for </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>auth<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> user.`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> HEROES<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>hero <span class="token operator">=</span><span class="token operator">></span> <span class="token keyword">this</span><span class="token punctuation">.</span>isAuthorized <span class="token operator">||</span> <span class="token operator">!</span>hero<span class="token punctuation">.</span>isSecret<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero.service.provider.ts (excerpt)</span>
+
+<span class="token keyword">const</span> heroServiceFactory <span class="token operator">=</span> <span class="token punctuation">(</span>logger<span class="token punctuation">:</span> Logger<span class="token punctuation">,</span> userService<span class="token punctuation">:</span> UserService<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">HeroService</span><span class="token punctuation">(</span>logger<span class="token punctuation">,</span> userService<span class="token punctuation">.</span>user<span class="token punctuation">.</span>isAuthorized<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> heroServiceProvider <span class="token operator">=</span>
+  <span class="token punctuation">{</span> 
+    provide<span class="token punctuation">:</span> HeroService<span class="token punctuation">,</span>
+    useFactory<span class="token punctuation">:</span> heroServiceFactory<span class="token punctuation">,</span>
+    deps<span class="token punctuation">:</span> <span class="token punctuation">[</span>Logger<span class="token punctuation">,</span> UserService<span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span></div></code></pre>
+<ul>
+<li><code>useFactory</code>字段指定该提供者是一个工厂函数，其实现代码是<code>heroServiceFactory</code>。</li>
+<li><code>deps</code>属性是一个提供者令牌数组，<code>Logger</code>和<code>UserService</code>类都是类提供者的令牌。该注入器解析了这些令牌，并把相应的服务注入到<code>heroServiceFactory</code>工厂函数的参数中。</li>
+</ul>
+<p>理解了工厂提供给者后再回过头看，<code>useValue</code>、<code>useClass</code>和<code>useExisting</code>的区别就更简单了，<code>provider</code>就是在装饰器中通过<code>providers</code>数组配置的元数据对象。</p>
+<div class="dg-paragraph"><img src="assets/images/di/provider-04.png" alt="image.png"></div>
+
+        <h2 id="%E6%8E%A5%E5%8F%A3%E5%92%8C%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5" class="docs-header-link">
+          <span header-link="%E6%8E%A5%E5%8F%A3%E5%92%8C%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5"></span>
+          接口和依赖注入
+        </h2>
+      <p>虽然 TypeScript 的<code>AppConfig</code>接口可以在类中提供类型支持，但它在依赖注入时却没有任何作用。在 TypeScript 中，接口只能作为类型检查，它没有可供 DI 框架使用的运行时表示形式或令牌。</p>
+<ul>
+<li>当转译器把 TypeScript 转换成 JavaScript 时，接口就会消失，因为 JavaScript 没有接口。</li>
+<li>由于 Angular 在运行期没有接口，所以该接口不能作为令牌，也不能注入它。</li>
+</ul>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// Can't use interface as provider token</span>
+<span class="token punctuation">[</span><span class="token punctuation">{</span> provide<span class="token punctuation">:</span> AppConfig<span class="token punctuation">,</span> useValue<span class="token punctuation">:</span> HERO_DI_CONFIG <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true">// Can't inject using the interface as the parameter type</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token keyword">private</span> config<span class="token punctuation">:</span> AppConfig<span class="token punctuation">)</span><span class="token punctuation">{</span> <span class="token punctuation">}</span></div></code></pre>
+
+        <h2 id="multi-%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96%E5%80%BC" class="docs-header-link">
+          <span header-link="multi-%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96%E5%80%BC"></span>
+          multi 多个依赖值
+        </h2>
+      <p>当配置提供者时设置<code>multi</code>为 true 时，通过<code>@Inject(DIToken)</code>参数注入获取的依赖值就会返回一个数组。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">export</span> <span class="token keyword">declare</span> <span class="token keyword">interface</span> <span class="token class-name">ClassProvider</span> <span class="token keyword">extends</span> <span class="token class-name">ClassSansProvider</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
+     * An injection token. (Typically an instance of `Type` or `InjectionToken`, but can be `any`).
+     */</span>
+    provide<span class="token punctuation">:</span> <span class="token keyword">any</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">/**
+     * When true, injector returns an array of instances. This is useful to allow multiple
+     * providers spread across many files to provide configuration information to a common token.
+     */</span>
+    multi<span class="token operator">?</span><span class="token punctuation">:</span> <span class="token keyword">boolean</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><strong>使用场景：</strong></div>
+<p>内置 API ，比如：<code>NG_VALUE_ACCESSOR</code>、<code>HTTP_INTERCEPTORS</code>、<code>APP_INITIALIZER</code>等</p>
+<pre class="language-ts"><code class="language-ts"><div>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    selector<span class="token punctuation">:</span> <span class="token string">'select'</span><span class="token punctuation">,</span>
+    templateUrl<span class="token punctuation">:</span> <span class="token string">'./select.component.html'</span><span class="token punctuation">,</span>
+    changeDetection<span class="token punctuation">:</span> ChangeDetectionStrategy<span class="token punctuation">.</span>OnPush<span class="token punctuation">,</span>
+    providers<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+            provide<span class="token punctuation">:</span> NG_VALUE_ACCESSOR<span class="token punctuation">,</span>
+            useExisting<span class="token punctuation">:</span> <span class="token function">forwardRef</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> ThySelectComponent<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            multi<span class="token punctuation">:</span> <span class="token keyword">true</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">ThySelectComponent</span> <span class="token keyword">implements</span> <span class="token class-name">ControlValueAccessor</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></div></code></pre>
+<p>以上就是依赖提供者 provider 相关的介绍，理解了 factory 提供依赖值后再看其他类型就会简单很多，其他的类型就是 factory 之上高级的 API 而已，满足不同的场景需要，这是 Angular 依赖注入入门比较难懂的知识，那么接下来的多级注入器是另一个重要的知识点，这两部分都深入理解那么 Angular 依赖注入就不在是难点了。</p>
