@@ -1,0 +1,31 @@
+<p>什么是一个 Subscription？Subscription 是一个代表可清理资源的对象，通常是一个 Observable 的执行。Subscription 有一个重要的方法<code>unsubscribe</code>，它不需要任何参数，只是处理 Subscription 拥有的资源。在之前的 RxJS 版本，Subscription 被称为‘可清理对象’。</p>
+<pre><code><div>import { interval } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable <span class="token operator">=</span> <span class="token function">interval</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> subscription <span class="token operator">=</span> observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token operator">/</span><span class="token operator">/</span> Later<span class="token punctuation">:</span>
+<span class="token operator">/</span><span class="token operator">/</span> This cancels the ongoing Observable execution which
+<span class="token operator">/</span><span class="token operator">/</span> was started by calling subscribe <span class="token keyword">with</span> an Observer<span class="token punctuation">.</span>
+subscription<span class="token punctuation">.</span><span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><blockquote>
+<p>一个 Subscription 实际上有一个<code>unsubscribe()</code>方法去释放资源或取消 Observable 的执行。</p>
+</blockquote>
+<p>Subscriptions 也可以放到一起，因此一个 Subscription 的<code>unsubscribe()</code>调用可以取消订阅多个 Subscriptions。你可以添加一个 Subscription 到另一个。</p>
+<pre><code><div>import { interval } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> observable1 <span class="token operator">=</span> <span class="token function">interval</span><span class="token punctuation">(</span><span class="token number">400</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> observable2 <span class="token operator">=</span> <span class="token function">interval</span><span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token keyword">const</span> subscription <span class="token operator">=</span> observable1<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'first: '</span> <span class="token operator">+</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+<span class="token keyword">const</span> childSubscription <span class="token operator">=</span> observable2<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>x <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'second: '</span> <span class="token operator">+</span> x<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+subscription<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>childSubscription<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+<span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+  <span class="token operator">/</span><span class="token operator">/</span> Unsubscribes BOTH subscription <span class="token operator">and</span> childSubscription
+  subscription<span class="token punctuation">.</span><span class="token function">unsubscribe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>当执行时，我们可以看见以下输出；</p>
+<pre><code><div>second<span class="token punctuation">:</span> <span class="token number">0</span>
+first<span class="token punctuation">:</span> <span class="token number">0</span>
+second<span class="token punctuation">:</span> <span class="token number">1</span>
+first<span class="token punctuation">:</span> <span class="token number">1</span>
+second<span class="token punctuation">:</span> <span class="token number">2</span></div></code></pre><p>Subscriptions 也有一个<code>remove(otherSubscription)</code>方法，以便于撤销添加子 Subscription。</p>
