@@ -1,0 +1,84 @@
+<p>在<a href="docs/di/concept">概念</a>章节大致介绍了依赖注入是什么，为什么 Angular 会选择依赖注入，本章节主要从基本使用开始进一步了解 Angular 中的依赖注入。</p>
+
+        <h2 id="%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8" class="docs-header-link">
+          <span header-link="%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"></span>
+          基本使用
+        </h2>
+      
+        <h3 id="%E7%AC%AC%E4%B8%80%E6%AD%A5:-%E5%88%9B%E5%BB%BA%E5%8F%AF%E6%B3%A8%E5%85%A5%E6%9C%8D%E5%8A%A1" class="docs-header-link">
+          <span header-link="%E7%AC%AC%E4%B8%80%E6%AD%A5:-%E5%88%9B%E5%BB%BA%E5%8F%AF%E6%B3%A8%E5%85%A5%E6%9C%8D%E5%8A%A1"></span>
+          第一步: 创建可注入服务
+        </h3>
+      <p>通过<code>@angular/cli</code>提供的<code>ng generate service heroes/hero</code> (简写<code>ng g s heroes/hero</code>)命令可以快速的创建一个服务，创建后的服务代码如下：</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero.service.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token punctuation">:</span> <span class="token string">'root'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HeroService</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<div class="dg-paragraph"><strong>HeroService</strong> 通过<code>@Injectable()</code>装饰器标记为可以被注入的服务，<code>providedIn: &#39;root&#39;</code>表示当前服务在 Root 注入器中提供（简单理解就是这个服务在整个应用所有地方都可以注入）并全局唯一实例。</div>
+
+        <h3 id="%E7%AC%AC%E4%BA%8C%E6%AD%A5:-%E6%B3%A8%E5%85%A5%E5%92%8C%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1" class="docs-header-link">
+          <span header-link="%E7%AC%AC%E4%BA%8C%E6%AD%A5:-%E6%B3%A8%E5%85%A5%E5%92%8C%E4%BD%BF%E7%94%A8%E6%9C%8D%E5%8A%A1"></span>
+          第二步: 注入和使用服务
+        </h3>
+      <p>添加服务后，我们就可以在任何组件中通过构造函数注入 <strong>HeroService</strong> ， 通过 TS 的构造函数赋值属性的特性设置为公开，这样组件内和模板中都可以使用该服务的函数和方法。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero-list.component</span>
+<span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token keyword">public</span> heroService<span class="token punctuation">:</span> HeroService<span class="token punctuation">)</span></div></code></pre>
+<p>简单的代码如下：</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token keyword">import</span> <span class="token punctuation">{</span> Hero <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../hero'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> HeroService <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../hero.service'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    selector<span class="token punctuation">:</span> <span class="token string">'app-hero-list'</span><span class="token punctuation">,</span>
+    template<span class="token punctuation">:</span> <span class="token string">'Heroes: {{heroes | json}}'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HeroListComponent</span> <span class="token keyword">implements</span> <span class="token class-name">OnInit</span> <span class="token punctuation">{</span>
+    heroes<span class="token operator">!</span><span class="token punctuation">:</span> Hero<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    
+    <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token keyword">public</span> heroService<span class="token punctuation">:</span> HeroService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+
+    <span class="token function">ngOnInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token keyword">void</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>heroes <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>heroService<span class="token punctuation">.</span><span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>除了在组件中注入服务外，在 Angular 中还可以在服务中注入其他服务，当某个服务依赖于另一个服务时，遵循与注入组件相同的模式，比如：<code>HeroService</code>要依靠<code>Logger</code>服务来记录日志。</p>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero.service.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Injectable <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@angular/core'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> HEROES <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./mock-heroes'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> Logger <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../logger.service'</span><span class="token punctuation">;</span>
+
+@<span class="token function">Injectable</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  providedIn<span class="token punctuation">:</span> <span class="token string">'root'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">HeroService</span> <span class="token punctuation">{</span>
+
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token keyword">private</span> logger<span class="token punctuation">:</span> Logger<span class="token punctuation">)</span> <span class="token punctuation">{</span>  <span class="token punctuation">}</span>
+
+  <span class="token function">getHeroes</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>logger<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Getting heroes ...'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> HEROES<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>
+<p>以上就是在 Angular 中使用依赖注入最简单的的两步，通过面向对象的 API 共享数据和业务逻辑，是不是觉得特别简单和易读。</p>
+
+        <h2 id="angular-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%AE%80%E4%BB%8B" class="docs-header-link">
+          <span header-link="angular-%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E7%AE%80%E4%BB%8B"></span>
+          Angular 依赖注入简介
+        </h2>
+      <p>在熟悉了基本使用后，下面简单介绍一下 Angular 依赖注入的几个基本的元素：</p>
+<ul>
+<li><strong>@Injectable()</strong> 类装饰器，用来提供元数据，表示一个服务可以被注入的（在之前的版本中服务不加 @Injectable() 也是可以被注入的，后来 5.0 版本改成静态注入器后必须要标识才可以被注入，否则会报错）。</li>
+<li><strong>注入器(Injector)</strong> 会创建依赖、维护一个容器来管理这些依赖，并尽可能复用它们，Angular 默认会创建多种注入器，使用者甚至感觉不到他的存在，但是理解注入器的底层逻辑后再看依赖注入就更简单了。</li>
+<li><strong>@Inject()</strong> 构造函数参数装饰器，表示要在组件/指令/管道/服务中注入一个服务。</li>
+<li><strong>提供者(Provider)</strong> 是一个对象，用来告诉注入器应该如何获取或创建依赖值。</li>
+</ul>
+<div class="dg-paragraph"><img src="assets/images/di/intro-01.png" alt="image.png"></div>
+<div class="dg-paragraph"><alert>在基本使用的示例中注入服务没有出现<code>@Inject()</code>装饰器，这是 Angular DI 提供的简写，注入一个服务的全写如下所示，定义服务通常都是使用类，所以省略<code>@Inject(HeroService)</code>极大的简化了样板代码。</alert></div>
+<pre class="language-ts"><code class="language-ts"><div><span class="token comment" spellcheck="true">// src/app/heroes/hero-list.component</span>
+<span class="token keyword">class</span> <span class="token class-name">HeroListComponent</span> <span class="token punctuation">{</span>
+  <span class="token keyword">constructor</span><span class="token punctuation">(</span>@<span class="token function">Inject</span><span class="token punctuation">(</span>HeroService<span class="token punctuation">)</span> <span class="token keyword">private</span> heroService<span class="token punctuation">:</span> HeroService<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div></code></pre>

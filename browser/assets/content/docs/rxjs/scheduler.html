@@ -1,0 +1,139 @@
+<div class="dg-paragraph"><strong>什么是调度器？</strong>调度器控制何时启动订阅和何时传递通知，它由三个部分组成：</div>
+<ul>
+<li><strong>调度器是一种数据结构</strong>。它知道如何根据优先级或其他标准存储和排队任务。</li>
+<li><strong>调度器是一个执行上下文</strong>。它表示任务在何时何地执行（例如立即执行或在另一个回调机制中执行，如 setTimeout 或 process.nextTick，或动画帧）。</li>
+<li><strong>调度器有一个（虚拟）时钟</strong>。它通过调度器上的 getter 方法 <code>now()</code> 提供了 “time” 的概念，在特定调度器上调度的任务将只遵循该时钟指示的时间。</li>
+</ul>
+<blockquote>
+<p>调度器允许你定义 Observable 在什么执行上下文中向其观察者发送通知。</p>
+</blockquote>
+<p>在下面的示例中，我们采用通常的简单 Observable 同步地发出值 <code>1</code>、<code>2</code>、<code>3</code>，并使用操作符 <code>observeOn</code> 指定用于传递这些值的异步调度器。</p>
+<pre><code><div>  observer<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  observer<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  observer<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  observer<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+  <span class="token function">observeOn</span><span class="token punctuation">(</span>asyncScheduler<span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just before subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>{
+  <span class="token function">next</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> {
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'got value '</span> <span class="token operator">+</span> x<span class="token punctuation">)</span>
+  }<span class="token punctuation">,</span>
+  <span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> {
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'something wrong occurred: '</span> <span class="token operator">+</span> err<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span>
+  <span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'done'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }
+}<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just after subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><p>执行结果如下：</p>
+<pre><code><div>just before subscribe
+just after subscribe
+got value <span class="token number">1</span>
+got value <span class="token number">2</span>
+got value <span class="token number">3</span>
+done</div></code></pre><p>注意通知 <code>got value...</code> 在 <code>just after subscribe</code> 后才交付，这与我们目前看到的默认行为不同。这是因为 <code>observeOn(asyncScheduler)</code> 在 <code>new Observable</code> 和最终的观察者之间引入了一个代理观察者，让我们重命名一些标识符，以便在示例代码中明显区分：</p>
+<pre><code><div>import { Observable<span class="token punctuation">,</span> asyncScheduler } from <span class="token string">'rxjs'</span><span class="token comment" spellcheck="true">;</span>
+import { observeOn } from <span class="token string">'rxjs/operators'</span><span class="token comment" spellcheck="true">;</span>
+
+var observable <span class="token operator">=</span> new <span class="token function">Observable</span><span class="token punctuation">(</span><span class="token punctuation">(</span>proxyObserver<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> {
+  proxyObserver<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  proxyObserver<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  proxyObserver<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  proxyObserver<span class="token punctuation">.</span><span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+}<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">pipe</span><span class="token punctuation">(</span>
+  <span class="token function">observeOn</span><span class="token punctuation">(</span>asyncScheduler<span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+
+var finalObserver <span class="token operator">=</span> {
+  <span class="token function">next</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> {
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'got value '</span> <span class="token operator">+</span> x<span class="token punctuation">)</span>
+  }<span class="token punctuation">,</span>
+  <span class="token function">error</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span> {
+    console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'something wrong occurred: '</span> <span class="token operator">+</span> err<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span>
+  <span class="token function">complete</span><span class="token punctuation">(</span><span class="token punctuation">)</span> {
+     console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'done'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }
+}<span class="token comment" spellcheck="true">;</span>
+
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just before subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+observable<span class="token punctuation">.</span><span class="token function">subscribe</span><span class="token punctuation">(</span>finalObserver<span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'just after subscribe'</span><span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span></div></code></pre><div class="dg-paragraph"><code>observeOn(asyncScheduler)</code> 创建了 <code>proxyObserver</code>，它的 <code>next(val)</code> 函数大致如下：</div>
+<pre><code><div><span class="token keyword">const</span> proxyObserver <span class="token operator">=</span> {
+  <span class="token function">next</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span> {
+    asyncScheduler<span class="token punctuation">.</span><span class="token function">schedule</span><span class="token punctuation">(</span>
+      <span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> finalObserver<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token number">0</span> <span class="token operator">/</span><span class="token operator">*</span> delay <span class="token operator">*</span><span class="token operator">/</span><span class="token punctuation">,</span>
+      val <span class="token operator">/</span><span class="token operator">*</span> will be the x <span class="token keyword">for</span> the function above <span class="token operator">*</span><span class="token operator">/</span>
+    <span class="token punctuation">)</span><span class="token comment" spellcheck="true">;</span>
+  }<span class="token punctuation">,</span>
+
+  <span class="token operator">/</span><span class="token operator">/</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+}</div></code></pre><p>异步调度器使用 <code>setTimeout</code> 或 <code>setInterval</code> 运行，即使给定的延迟为零。与往常一样，在 JavaScript 中，<code>setTimeout(fn, 0)</code> 在下一次事件循环中最早运行函数 <code>fn</code>。这就解释了为什么在 <code>just after subscribe</code> 发生之后 <code>got value 1</code> 被传递到 <code>finalObserver</code>。</p>
+<p>调度器的 <code>schedule()</code> 方法接受一个 <code>delay</code> 参数，该参数表示相对于调度器自身内部时钟的时间量。调度器的时钟不需要与实际的时间有任何关系。像 <code>delay</code> 这样的时间操作符不是在实际时间上操作的，而是在调度器的时钟指定的时间上操作的。这在测试中特别有用，在测试中，虚拟时间调度器可以用来伪造挂钟时间，而实际上却是同步执行计划的任务。</p>
+
+        <h2 id="%E8%B0%83%E5%BA%A6%E5%99%A8%E7%B1%BB%E5%9E%8B" class="docs-header-link">
+          <span header-link="%E8%B0%83%E5%BA%A6%E5%99%A8%E7%B1%BB%E5%9E%8B"></span>
+          调度器类型
+        </h2>
+      <p>异步调度器是 RxJS 提供的内置调度器之一，每一个调度器都可以通过 <code>Scheduler</code> 对象的静态属性来创建和返回。</p>
+<table>
+<thead>
+<tr>
+<th>调度器</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>null</code></td>
+<td>通过不传递任何调度器，通知以同步和递归方式传递，将其用于固定时间操作或尾部递归操作。</td>
+</tr>
+<tr>
+<td><code>queueScheduler</code></td>
+<td>当前事件帧中队列上的计划（蹦床调度器）。将其用于迭代操作。</td>
+</tr>
+<tr>
+<td><code>asapScheduler</code></td>
+<td>微任务队列上的调度，该队列与用于 Promises 的队列相同。基本上是在 current job 之后，但在 next job 之前。用于异步转换。</td>
+</tr>
+<tr>
+<td><code>asyncScheduler</code></td>
+<td>调度工作使用 <code>setInterval</code>，将此用于基于时间的操作。</td>
+</tr>
+<tr>
+<td><code>animationFrameScheduler</code></td>
+<td>调度任务将在下一次浏览器内容重新绘制之前。可用于创建平滑的浏览器动画。</td>
+</tr>
+</tbody></table>
+
+        <h2 id="%E4%BD%BF%E7%94%A8%E8%B0%83%E5%BA%A6%E5%99%A8" class="docs-header-link">
+          <span header-link="%E4%BD%BF%E7%94%A8%E8%B0%83%E5%BA%A6%E5%99%A8"></span>
+          使用调度器
+        </h2>
+      <p>你可能已经不知不觉中在 RxJS 代码中使用了调度器，虽然没有指定使用的调度器的类型。这是因为所有处理并发的 Observable 操作符都提供可选的调度器参数，如果不提供调度器，RxJS 将使用最少并发性原则选择一个默认的调度器，这意味着选择引入最少并发量来满足操作符需求的调度器。例如，对于返回带有有限和少量消息的 Observable 的操作符，RxJS 不使用调度器，即 <code>null</code> 或 <code>undefined</code>。对于返回可能大量或无限多个消息的运算符，将使用队列调度器，对于使用计时器的运算符，使用异步调度器。</p>
+<p>因为 RxJS 使用最少的并发调度器，所以如果想引入不同的调度器提高并发性能，可以选择不同的调度器。指定一个特定的调度器，你可以使用那些获取调度器的操作符方法，例如：<code>from([10, 20, 30], asyncScheduler)</code>。</p>
+<div class="dg-paragraph"><strong>静态创建操作符通常使用调度器作为参数。</strong>例如，<code>from(array, scheduler)</code> 允许指定调度器，从数组中转换每一个通知传输时使用。它通常是操作符的最后一个参数，以下静态创建操作符有调度器参数：</div>
+<ul>
+<li><code>bindCallback</code></li>
+<li><code>bindNodeCallback</code></li>
+<li><code>combineLatest</code></li>
+<li><code>concat</code></li>
+<li><code>empty</code></li>
+<li><code>from</code></li>
+<li><code>fromPromise</code></li>
+<li><code>interval</code></li>
+<li><code>merge</code></li>
+<li><code>of</code></li>
+<li><code>range</code></li>
+<li><code>throw</code></li>
+<li><code>timer</code></li>
+</ul>
+<div class="dg-paragraph"><strong>使用 subscribeOn 来确定 subscribe() 调用将在什么上下文中发生。</strong>默认情况下，对 Observable 的 <code>subscribe()</code> 调用将是同步且立即发生的。但是，可以使用实例操作符 <code>subscribeOn(scheduler)</code> 延迟或计划在给定的调度器上发生实际的订阅。</div>
+<div class="dg-paragraph"><strong>使用 observeOn 来确定将在什么上下文中传递通知。</strong>正如我们在上面的例子中看到的，实例操作符 <code>observeOn(scheduler)</code> 在源 Observable 和目标观察者之间引入了一个中介观察器，其中中介器使用给定的调度器调度对目标观察者的调用。</div>
+<div class="dg-paragraph"><strong>实例操作符可以使用调度器作为参数。</strong></div>
+<p>与时间相关的运算符，如 <code>bufferTime</code>, <code>debounceTime</code>, <code>delay</code>, <code>auditTime</code>, <code>sampleTime</code>, <code>throttleTime</code>, <code>timeInterval</code>, <code>timeout</code>, <code>timeoutWith</code>, <code>windowTime</code> 等都将调度器作为最后一个参数，默认情况下在使用 <code>asyncScheduler</code>。</p>
+<p>其他以调度器为参数的实例运算符：<code>cache</code>, <code>combineLatest</code>, <code>concat</code>, <code>expand</code>, <code>merge</code>, <code>publishReplay</code>, <code>startWith</code>。</p>
+<p>请注意，<code>cache</code> 和 <code>publishReplay </code>都接受调度器，因为它们使用 ReplaySubject。ReplaySubject 的构造函数将可选的调度器作为最后一个参数，因为 ReplaySubject 可能处理时间，这只在调度器的上下文中才有意义。默认情况下，ReplaySubject 使用队列调度器提供时钟。</p>
